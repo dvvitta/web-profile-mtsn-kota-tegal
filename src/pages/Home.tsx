@@ -1,7 +1,47 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import api from '../lib/api';
 import { Link } from 'react-router-dom';
 
+interface Berita {
+    prestasi: string;
+    id: number;
+    title: string;
+    content: string;
+    author: string;
+    imageUrl: string | null;
+    status: string;
+    createdAt: string;
+}
+
 const Home = () => {
+    // 1. PINDAHKAN useState KE DALAM KOMPONEN
+    const [berita, setBerita] = useState<Berita[]>([]);
+    const [loadingBerita, setLoadingBerita] = useState(true);
+
+    useEffect(() => {
+        // 2. PINDAHKAN fungsi fetch ke dalam useEffect (Best Practice)
+        const fetchBerita = async () => {
+            try {
+                setLoadingBerita(true);
+
+                const res = await api.get('/berita');
+
+                // hanya tampilkan yang published
+                const published = res.data.filter(
+                    (item: Berita) => item.status === 'published'
+                );
+
+                setBerita(published);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoadingBerita(false);
+            }
+        };
+
+        fetchBerita();
+    }, []);
+
     return (
         <div className="w-full font-sans text-gray-800">
 
@@ -106,36 +146,54 @@ const Home = () => {
                         {/* Card 1 */}
                         <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-100">
                             <div className="h-48 bg-gray-200 overflow-hidden">
-                                <img src="https://via.placeholder.com/400x200" alt="Akademik" className="w-full h-full object-cover" />
+                                <img
+                                    src={
+                                        berita[0]?.imageUrl ||
+                                        `https://picsum.photos/800/600?random=${berita[0]?.id}`
+                                    }
+                                    alt={berita[0]?.title}
+                                />
                             </div>
                             <div className="p-6">
-                                <span className="text-xs font-bold text-green-800 tracking-wider">AKADEMIK</span>
-                                <h3 className="font-bold text-lg mt-2 mb-3 text-gray-900">Juara 1 Olimpiade Sains Nasional Tingkat Provinsi</h3>
-                                <p className="text-sm text-gray-600 leading-relaxed">Tim Robotik MTsN Kota Tegal berhasil mengungguli 50 sekolah lainnya dalam ajang tahunan...</p>
+                                <span className="text-xs font-bold text-green-800 tracking-wider">{berita[0]?.prestasi}</span>
+                                <h3 className="font-bold text-lg mt-2 mb-3 text-gray-900">{berita[0]?.title}</h3>
+                                <p className="text-sm text-gray-600 leading-relaxed">{berita[0]?.content}</p>
                             </div>
                         </div>
 
                         {/* Card 2 */}
                         <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-100">
                             <div className="h-48 bg-gray-200 overflow-hidden">
-                                <img src="https://via.placeholder.com/400x200" alt="Keagamaan" className="w-full h-full object-cover" />
+                                <img
+                                    src={
+                                        berita[1]?.imageUrl ||
+                                        `https://picsum.photos/800/600?random=${berita[1]?.id}`
+                                    }
+                                    alt={berita[1]?.title}
+                                />
                             </div>
                             <div className="p-6">
-                                <span className="text-xs font-bold text-blue-800 tracking-wider">KEAGAMAAN</span>
-                                <h3 className="font-bold text-lg mt-2 mb-3 text-gray-900">Terbaik 1 MHQ 30 Juz Tingkat Kota Tegal</h3>
-                                <p className="text-sm text-gray-600 leading-relaxed">Ananda Siti Aminah meraih predikat terbaik dalam lomba Musabaqah Hifzil Quran...</p>
+                                <span className="text-xs font-bold text-blue-800 tracking-wider">{berita[1]?.prestasi}</span>
+                                <h3 className="font-bold text-lg mt-2 mb-3 text-gray-900">{berita[1]?.title}</h3>
+                                <p className="text-sm text-gray-600 leading-relaxed">{berita[1]?.content}</p>
                             </div>
                         </div>
 
                         {/* Card 3 */}
                         <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-100">
                             <div className="h-48 bg-gray-200 overflow-hidden">
-                                <img src="https://via.placeholder.com/400x200" alt="Olahraga" className="w-full h-full object-cover" />
+                                <img
+                                    src={
+                                        berita[2]?.imageUrl ||
+                                        `https://picsum.photos/800/600?random=${berita[2]?.id}`
+                                    }
+                                    alt={berita[2]?.title}
+                                />
                             </div>
                             <div className="p-6">
-                                <span className="text-xs font-bold text-orange-800 tracking-wider">OLAHRAGA</span>
-                                <h3 className="font-bold text-lg mt-2 mb-3 text-gray-900">Medali Emas Pencak Silat Popda 2023</h3>
-                                <p className="text-sm text-gray-600 leading-relaxed">Prestasi gemilang diraih di bidang seni bela diri tingkat daerah...</p>
+                                <span className="text-xs font-bold text-orange-800 tracking-wider">{berita[2]?.prestasi}</span>
+                                <h3 className="font-bold text-lg mt-2 mb-3 text-gray-900">{berita[2]?.title}</h3>
+                                <p className="text-sm text-gray-600 leading-relaxed">{berita[2]?.content}</p>
                             </div>
                         </div>
 
@@ -143,65 +201,105 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* BERITA & ARTIKEL TERBARU SECTION */}
+            {/* BERITA & ARTIKEL TERBARU */}
             <section className="px-8 md:px-20 py-20 bg-white">
                 <div className="max-w-7xl mx-auto">
-                    <h2 className="text-3xl font-bold text-center text-green-900 mb-12">Berita & Artikel Terbaru</h2>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <h2 className="text-3xl font-bold text-center text-green-900 mb-12">
+                        Berita & Artikel Terbaru
+                    </h2>
 
-                        {/* Artikel Utama (Kiri) */}
-                        <div className="relative rounded-xl overflow-hidden h-112.5 group cursor-pointer shadow-sm">
-                            <img src="https://via.placeholder.com/800x600" alt="Berita Utama" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                            <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent"></div>
-                            <div className="absolute bottom-0 left-0 p-8 text-white w-full">
-                                <span className="bg-green-600 px-3 py-1 text-xs font-bold tracking-wider rounded inline-block mb-4">PENGUMUMAN</span>
-                                <h3 className="text-2xl font-bold mb-3 leading-snug">Persiapan Ujian Madrasah Berbasis Komputer (UMBK) 2024</h3>
-                                <p className="text-sm text-gray-300 line-clamp-2">Seluruh siswa kelas IX diharapkan mengikuti simulasi terakhir yang akan dilaksanakan pada pekan depan...</p>
-                            </div>
+                    {loadingBerita ? (
+                        <div className="text-center">
+                            Memuat berita...
                         </div>
+                    ) : berita.length === 0 ? (
+                        <div className="text-center text-gray-500">
+                            Belum ada berita tersedia.
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-                        {/* List Artikel (Kanan) */}
-                        <div className="flex flex-col justify-between gap-6">
+                            {/* Berita Utama */}
+                            <div className="relative rounded-xl overflow-hidden h-112.5 group cursor-pointer shadow-sm">
 
-                            {/* Item List 1 */}
-                            <div className="flex gap-6 group cursor-pointer bg-white p-2 rounded-xl hover:bg-gray-50 transition-colors">
-                                <div className="w-40 h-28 bg-gray-200 rounded-lg overflow-hidden shrink-0">
-                                    <img src="https://via.placeholder.com/200x150" alt="Thumbnail" className="w-full h-full object-cover" />
-                                </div>
-                                <div className="flex flex-col justify-center">
-                                    <span className="text-xs text-green-700 font-bold mb-1">12 Jan 2024</span>
-                                    <h4 className="font-bold text-gray-900 leading-tight mb-2 group-hover:text-green-700 transition-colors">Program Kantin Sehat: Menuju Madrasah Ramah Anak</h4>
-                                    <p className="text-sm text-gray-500 line-clamp-2">Pihak sekolah resmi meluncurkan inisiatif makanan bergizi gratis untuk...</p>
+                                <img
+                                    src={
+                                        berita[0]?.imageUrl ||
+                                        `https://picsum.photos/800/600?random=${berita[0]?.id}`
+                                    }
+                                    alt={berita[0]?.title}
+                                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                />
+
+                                <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent"></div>
+
+                                <div className="absolute bottom-0 left-0 p-8 text-white w-full">
+
+                                    <span className="bg-green-600 px-3 py-1 text-xs font-bold rounded">
+                                        BERITA
+                                    </span>
+
+                                    <h3 className="text-2xl font-bold mt-4 mb-3">
+                                        {berita[0]?.title}
+                                    </h3>
+
+                                    <p className="text-sm text-gray-300 line-clamp-3">
+                                        {berita[0]?.content}
+                                    </p>
                                 </div>
                             </div>
 
-                            {/* Item List 2 */}
-                            <div className="flex gap-6 group cursor-pointer bg-white p-2 rounded-xl hover:bg-gray-50 transition-colors">
-                                <div className="w-40 h-28 bg-gray-200 rounded-lg overflow-hidden shrink-0">
-                                    <img src="https://via.placeholder.com/200x150" alt="Thumbnail" className="w-full h-full object-cover" />
-                                </div>
-                                <div className="flex flex-col justify-center">
-                                    <span className="text-xs text-green-700 font-bold mb-1">05 Jan 2024</span>
-                                    <h4 className="font-bold text-gray-900 leading-tight mb-2 group-hover:text-green-700 transition-colors">Wisuda Purnawiyata Angkatan 42 Berjalan Khidmat</h4>
-                                    <p className="text-sm text-gray-500 line-clamp-2">Sebanyak 350 siswa resmi dilepas untuk melanjutkan ke jenjang pendidikan...</p>
-                                </div>
-                            </div>
+                            {/* List Berita */}
+                            <div className="flex flex-col gap-6">
 
-                            {/* Item List 3 */}
-                            <div className="flex gap-6 group cursor-pointer bg-white p-2 rounded-xl hover:bg-gray-50 transition-colors">
-                                <div className="w-40 h-28 bg-gray-200 rounded-lg overflow-hidden shrink-0">
-                                    <img src="https://via.placeholder.com/200x150" alt="Thumbnail" className="w-full h-full object-cover" />
-                                </div>
-                                <div className="flex flex-col justify-center">
-                                    <span className="text-xs text-green-700 font-bold mb-1">28 Des 2023</span>
-                                    <h4 className="font-bold text-gray-900 leading-tight mb-2 group-hover:text-green-700 transition-colors">Peresmian Perpustakaan Digital "Baitul Hikmah"</h4>
-                                    <p className="text-sm text-gray-500 line-clamp-2">Fasilitas baru ini memungkinkan siswa mengakses ribuan e-book secara...</p>
-                                </div>
+                                {berita.slice(1, 4).map((item) => (
+                                    <div
+                                        key={item.id}
+                                        className="flex gap-6 group cursor-pointer bg-white p-2 rounded-xl hover:bg-gray-50 transition-colors"
+                                    >
+                                        <div className="w-40 h-28 bg-gray-200 rounded-lg overflow-hidden shrink-0">
+
+                                            <img
+                                                src={
+                                                    item.imageUrl ||
+                                                    `https://picsum.photos/300/200?random=${item.id}`
+                                                }
+                                                alt={item.title}
+                                                className="w-full h-full object-cover"
+                                            />
+
+                                        </div>
+
+                                        <div className="flex flex-col justify-center">
+
+                                            <span className="text-xs text-green-700 font-bold mb-1">
+                                                {new Date(item.createdAt).toLocaleDateString(
+                                                    'id-ID',
+                                                    {
+                                                        day: 'numeric',
+                                                        month: 'short',
+                                                        year: 'numeric',
+                                                    }
+                                                )}
+                                            </span>
+
+                                            <h4 className="font-bold text-gray-900 leading-tight mb-2 group-hover:text-green-700 transition-colors">
+                                                {item.title}
+                                            </h4>
+
+                                            <p className="text-sm text-gray-500 line-clamp-2">
+                                                {item.content}
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                ))}
+
                             </div>
 
                         </div>
-                    </div>
+                    )}
                 </div>
             </section>
 

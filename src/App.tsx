@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Profil from './pages/Profil';
 import Akademik from './pages/Akademik';
 import Kontak from './pages/Kontak';
+import Admin from './pages/Admin';
 
 // Konfigurasi routing
 const router = createBrowserRouter([
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
         path: 'Kontak',
         element: <Kontak />,
       },
+      {
+        path: 'Admin',
+        element: <Admin />,
+      }
       // Anda bisa menambahkan route lain di sini...
     ],
   },

@@ -69,11 +69,28 @@ const Profil = () => {
                         <div className="flex flex-col-reverse lg:flex-row gap-10 items-start">
                             <div className="lg:w-3/5 text-gray-600 space-y-5 leading-relaxed text-sm md:text-base">
                                 <p>
-                                    MTsN Kota Tegal didirikan pada tahun 1978 dengan semangat untuk memberikan pendidikan Islam yang berkualitas di wilayah pesisir Tegal. Berawal dari bangunan sederhana, madrasah ini terus bertransformasi menjadi institusi pendidikan modern.
+                                    Sebuah institusi besar tidak pernah lahir dalam semalam. Ada peluh, dedikasi, dan sinergi dari banyak pihak di balik kokohnya bangunan Madrasah Aliyah Negeri (MAN) Kota Tegal hari ini. Inilah kisah perjalanan kami—sebuah bukti nyata bahwa keterbatasan bukanlah penghalang untuk mencetak generasi gemilang.
                                 </p>
                                 <p>
-                                    Melalui perjalanan panjang selama lebih dari empat dekade, MTsN Kota Tegal telah melahirkan ribuan alumni yang berkontribusi dalam berbagai sektor pembangunan nasional, dengan tetap memegang teguh nilai-nilai Amanah dan Istiqomah.
+                                    Kisah kami bermula pada tahun 1984. Diprakarsai oleh Yayasan Assalafiyah, madrasah ini awalnya hanyalah sebuah kelas jauh (filial) dari MAN Babakan. Di bawah arahan Kepala Madrasah pertama, Mu’min Mahmud, langkah kecil ini dimulai.
+
+                                    Meski hanya menempati gedung MTs Assalafiyah dengan Kegiatan Belajar Mengajar (KBM) yang dilangsungkan pada sore hingga malam hari, semangat belajar tak pernah padam. Angkatan pertama kami sukses menarik ±160 siswa yang terbagi dalam empat rombongan belajar.
                                 </p>
+                                <p>Seiring turunnya SK Pusat pada 5 Agustus 1986, madrasah yang saat itu dipimpin oleh Mustadjab mulai menunjukkan taringnya. Kami dipercaya menyelenggarakan Ujian Akhir (EBTAN) perdana pada tahun ajaran 1986/1987 untuk 143 siswa.
+
+                                    Fase ini adalah fase perjuangan. Demi mendapatkan waktu belajar yang lebih optimal di pagi hari, madrasah ini sempat beberapa kali berpindah lokasi—mulai dari MDA Kemeduran, Jalan Arum Randugunting, hingga MTs Al Munawar. Namun, semangat civitas akademika tidak pernah surut sedikit pun.</p>
+                                <p>Kerja keras bertahun-tahun akhirnya berbuah manis. Di era kepemimpinan Mohammad Cholid yang kemudian dilanjutkan oleh M. Sanuddin, angin segar itu datang. Tepat pada 25 November 1995, SK Penegerian resmi turun.
+
+                                    Momen bersejarah ini diproklamirkan dengan penuh kebanggaan di Pendopo Balai Kota Tegal pada 7 Maret 1996. Peresmian ini menjadi simbol kolaborasi yang harmonis antara Wali Kota Tegal saat itu, M. Zakir, dan Kepala Kandepag, Mulyono.</p>
+                                <p>Langkah MAN Kota Tegal semakin tegak berkat kemuliaan hati Bapak Ismail (pensiunan pegawai Kandepag) dan sang istri, Ibu Rukoyah (pemilik PO. Dewi Sri), yang mewakafkan sebidang tanah. Di bawah kepemimpinan Chudlori Affandi, pembangunan tahap awal di Pesurungan Lor pun terealisasi.
+
+                                    Hadirnya gedung baru menjadi magnet luar biasa. Animo masyarakat melonjak tajam hingga nyaris sepuluh kali lipat dari jumlah siswa sebelumnya. Saking banyaknya pendaftar, KBM bahkan sempat harus dibagi di dua lokasi yang berbeda.
+                                </p>
+                                <p>Keterbatasan sarana tak membuat kami diam menunggu. Melalui inisiatif luar biasa dari Kamaluddin dan sistem imbal swadaya, kami berhasil membangun tambahan ruang kelas secara mandiri. Perjuangan gigih ini akhirnya menarik perhatian penuh dari Kanwil Departemen Agama Provinsi Jawa Tengah.
+
+                                    Tepat pada tahun ajaran 2001/2002, seluruh aktivitas MAN Kota Tegal resmi menyatu di gedung baru Pesurungan Lor. Perkembangan tidak berhenti di situ. Pada 11 Agustus 2003, berkat usulan Kepala Madrasah Mubasyir Dahlan dan dukungan Wali Kota Adi Winarso, madrasah mendapatkan hak pakai tanah seluas 4.600 m² untuk terus memperluas fasilitas.
+                                </p>
+                                <p>Kini, MAN Kota Tegal bukan lagi sekadar "kelas jauh" yang belajar di sore hari. Kami berdiri tegak sebagai institusi pendidikan kebanggaan masyarakat yang terus didukung oleh pemerintah dan Depag, siap mencetak generasi pemimpin masa depan yang berakhlak mulia dan berwawasan luas.</p>
                             </div>
 
                             <div className="lg:w-2/5 bg-[#f8fbfa] p-3 rounded-2xl border border-gray-100 shadow-sm w-full">

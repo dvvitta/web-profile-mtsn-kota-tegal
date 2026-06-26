@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const Akademik = () => {
     // 1. State untuk menyimpan ID menu yang sedang aktif
@@ -46,7 +46,7 @@ const Akademik = () => {
                 {/* SIDEBAR NAVIGATION (Dengan Active State)  */}
                 {/* ========================================= */}
                 <aside className="md:col-span-3 z-30">
-                    <div className="sticky top-[70px] md:top-28 bg-[#f8fbfa]/95 backdrop-blur-sm md:bg-[#f8fbfa] p-3 md:p-6 rounded-2xl md:border border-gray-100 shadow-sm md:shadow-none mx-[-1rem] px-4 md:mx-0 md:px-6">
+                    <div className="sticky top-17.5 md:top-28 bg-[#f8fbfa]/95 backdrop-blur-sm md:bg-[#f8fbfa] p-3 md:p-6 rounded-2xl md:border border-gray-100 shadow-sm md:shadow-none -mx-4 px-4 md:mx-0 md:px-6">
 
                         <div className="hidden md:block mb-6">
                             <h3 className="text-sm font-bold text-gray-900">Akademik</h3>
@@ -62,7 +62,7 @@ const Akademik = () => {
                                         <a
                                             href={`#${item.id}`}
                                             onClick={() => setActiveSection(item.id)} // Set aktif saat diklik manual
-                                            className={`whitespace-nowrap flex-shrink-0 md:w-full text-left px-5 py-2.5 md:px-4 md:py-3 rounded-full md:rounded-xl text-sm font-medium flex items-center gap-2 md:gap-3 transition-all duration-200 active:scale-95 ${isActive
+                                            className={`whitespace-nowrap shrink-0 md:w-full text-left px-5 py-2.5 md:px-4 md:py-3 rounded-full md:rounded-xl text-sm font-medium flex items-center gap-2 md:gap-3 transition-all duration-200 active:scale-95 ${isActive
                                                     ? 'bg-green-800 text-white shadow-sm'
                                                     : 'text-gray-600 bg-white md:bg-transparent border md:border-none border-gray-200 hover:bg-green-50'
                                                 }`}
