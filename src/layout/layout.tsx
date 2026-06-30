@@ -1,6 +1,6 @@
 import { Outlet, Link, NavLink } from 'react-router-dom';
 import Footer from './Footer';
-import useUIStore from '../store/IUStore';
+import { useUIStore } from '../store/IUStore';
 
 const Layout = () => {
     // cast to any to avoid 'unknown' store return type issues
@@ -48,7 +48,7 @@ const Layout = () => {
 
                     {/* CTA Button dengan efek taktil (membesar saat di-hover, mengecil saat diklik) */}
                     <button className="bg-green-700 text-white px-5 py-2.5 rounded-md text-sm font-semibold hover:bg-green-800 hover:shadow-md transform hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all duration-200">
-                        <NavLink to="/Admin">Daftar Sekarang</NavLink>
+                        <NavLink to="/LoginPage">Masuk</NavLink>
 
                     </button>
                 </div>

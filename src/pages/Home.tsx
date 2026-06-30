@@ -1,39 +1,60 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import api from '../lib/api';
 import { Link } from 'react-router-dom';
 
-interface Berita {
-    prestasi: string;
+interface Kategori {
     id: number;
-    title: string;
-    content: string;
-    author: string;
-    imageUrl: string | null;
-    status: string;
+    nama: string;
+    slug: string;
+}
+
+interface Berita {
+    id: number;
+    judul: string;
+    slug: string;
+    ringkasan: string | null;
+    thumbnail: string | null;
+    isi: string;
+    published: boolean;
     createdAt: string;
+    kategori: Kategori;
+    user: { id: number; nama: string };
+}
+
+function formatTanggal(dateString: string) {
+    return new Date(dateString).toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+    });
+}
+
+function fallbackImage(id: number) {
+    return `https://picsum.photos/800/600?random=${id}`;
 }
 
 const Home = () => {
-    // 1. PINDAHKAN useState KE DALAM KOMPONEN
     const [berita, setBerita] = useState<Berita[]>([]);
     const [loadingBerita, setLoadingBerita] = useState(true);
+    const [errorBerita, setErrorBerita] = useState<string | null>(null);
 
     useEffect(() => {
-        // 2. PINDAHKAN fungsi fetch ke dalam useEffect (Best Practice)
         const fetchBerita = async () => {
             try {
                 setLoadingBerita(true);
+                setErrorBerita(null);
 
+                // Backend membungkus hasil dalam { success, data }
                 const res = await api.get('/berita');
+                const allBerita: Berita[] = res.data?.data ?? [];
 
-                // hanya tampilkan yang published
-                const published = res.data.filter(
-                    (item: Berita) => item.status === 'published'
-                );
+                // Field yang benar adalah `published` (boolean), bukan `status`
+                const published = allBerita.filter((item) => item.published);
 
                 setBerita(published);
             } catch (error) {
                 console.error(error);
+                setErrorBerita('Gagal memuat berita. Coba muat ulang halaman.');
             } finally {
                 setLoadingBerita(false);
             }
@@ -42,33 +63,36 @@ const Home = () => {
         fetchBerita();
     }, []);
 
+    const unggulan = berita.slice(0, 3);
+    const utama = berita[0];
+    const sampingan = berita.slice(1, 4);
+
     return (
         <div className="w-full font-sans text-gray-800">
 
             {/* HERO SECTION */}
-            <section className="relative h-[85vh] flex items-center bg-green-900 overflow-hidden">
-                {/* Background Image Placeholder & Overlay */}
+            <section className="relative h-[88vh] flex items-center bg-emerald-950 overflow-hidden">
                 <div
-                    className="absolute inset-0 z-0 bg-cover bg-center"
+                    className="absolute inset-0 z-0 bg-cover bg-center scale-105"
                     style={{ backgroundImage: "url('https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?q=80&w=2069&auto=format&fit=crop')" }}
                 ></div>
-                <div className="absolute inset-0 bg-green-900/70 z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-950/80 to-emerald-950/40 z-10"></div>
 
                 <div className="relative z-20 px-8 md:px-20 max-w-4xl text-white">
-                    <span className="bg-green-100 text-green-800 font-bold px-3 py-1 text-xs tracking-wider rounded mb-6 inline-block">
+                    <span className="bg-white/10 backdrop-blur-sm border border-white/20 text-emerald-50 font-semibold px-4 py-1.5 text-xs tracking-widest rounded-full mb-7 inline-block">
                         TERAKREDITASI A
                     </span>
-                    <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-6">
-                        Membangun Generasi<br />Amanah & Berprestasi
+                    <h1 className="text-5xl md:text-6xl font-bold leading-[1.1] mb-6 tracking-tight">
+                        Membangun Generasi<br />Amanah &amp; Berprestasi
                     </h1>
-                    <p className="mb-10 text-gray-200 text-lg md:text-xl max-w-2xl leading-relaxed">
+                    <p className="mb-10 text-emerald-100/90 text-lg md:text-xl max-w-2xl leading-relaxed font-light">
                         Selamat datang di MTsN Kota Tegal. Kami berkomitmen menyelenggarakan pendidikan Islam yang berkualitas, modern, dan berwawasan global.
                     </p>
-                    <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                        <button className="bg-green-700 hover:bg-green-600 px-8 py-3 rounded text-sm font-semibold transition-colors">
+                    <div className="flex flex-col sm:flex-row gap-4">
+                        <button className="bg-emerald-500 hover:bg-emerald-400 text-emerald-950 px-8 py-3.5 rounded-full text-sm font-semibold transition-all hover:shadow-lg hover:shadow-emerald-500/20">
                             Jelajahi Profil
                         </button>
-                        <button className="border border-white hover:bg-white/10 px-8 py-3 rounded text-sm font-semibold transition-colors">
+                        <button className="border border-white/30 hover:border-white/60 hover:bg-white/5 px-8 py-3.5 rounded-full text-sm font-semibold transition-colors">
                             Lihat Fasilitas
                         </button>
                     </div>
@@ -76,49 +100,47 @@ const Home = () => {
             </section>
 
             {/* SAMBUTAN & STATISTIK SECTION */}
-            <section className="px-8 md:px-20 py-16 bg-gray-50 flex justify-center">
-                <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-3 gap-8 shadow-lg rounded-xl overflow-hidden bg-white">
+            <section className="px-6 md:px-20 py-20 bg-gray-50 flex justify-center -mt-16 relative z-30">
+                <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-3 gap-0 shadow-xl shadow-gray-200/60 rounded-2xl overflow-hidden bg-white">
 
-                    {/* Kolom Sambutan (Kiri) */}
-                    <div className="lg:col-span-2 p-8 md:p-12 flex flex-col md:flex-row gap-8 items-start">
+                    <div className="lg:col-span-2 p-10 md:p-14 flex flex-col md:flex-row gap-8 items-start">
                         <img
                             src="https://via.placeholder.com/150x200"
                             alt="Kepala Madrasah"
-                            className="w-32 md:w-40 object-cover rounded shadow-sm shrink-0"
+                            className="w-32 md:w-36 object-cover rounded-xl shadow-md shrink-0"
                         />
                         <div>
-                            <h2 className="text-2xl font-bold text-green-900 mb-4">Sambutan Kepala Madrasah</h2>
-                            <p className="text-gray-600 mb-6 leading-relaxed text-sm">
+                            <h2 className="text-2xl font-bold text-emerald-900 mb-4 tracking-tight">Sambutan Kepala Madrasah</h2>
+                            <p className="text-gray-500 mb-6 leading-relaxed text-sm">
                                 "Assalamu'alaikum Warahmatullahi Wabarakatuh. Puji syukur kita panjatkan kehadirat Allah SWT. Di era digital ini, MTsN Kota Tegal terus berinovasi untuk mencetak lulusan yang tidak hanya cerdas secara akademik, namun juga memiliki akhlakul karimah yang kokoh."
                             </p>
                             <div>
-                                <p className="font-bold text-gray-800">Drs. H. Miftahuddin, M.Ag.</p>
-                                <p className="text-sm text-gray-500">Kepala MTsN Kota Tegal</p>
+                                <p className="font-bold text-gray-900">Drs. H. Miftahuddin, M.Ag.</p>
+                                <p className="text-sm text-gray-400">Kepala MTsN Kota Tegal</p>
                             </div>
                         </div>
                     </div>
 
-                    {/* Kolom Statistik (Kanan) */}
-                    <div className="bg-green-800 p-8 md:p-12 text-white flex flex-col justify-center space-y-8">
+                    <div className="bg-emerald-900 p-10 md:p-14 text-white flex flex-col justify-center gap-8">
                         <div className="flex items-center gap-5">
-                            <div className="p-3 bg-green-700 rounded-lg">👥</div>
+                            <div className="p-3 bg-white/10 rounded-xl text-xl">👥</div>
                             <div>
-                                <h3 className="text-3xl font-bold">1.200+</h3>
-                                <p className="text-green-100 text-sm">Siswa Aktif</p>
+                                <h3 className="text-3xl font-bold tracking-tight">1.200+</h3>
+                                <p className="text-emerald-200/80 text-sm">Siswa Aktif</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-5">
-                            <div className="p-3 bg-green-700 rounded-lg">🎓</div>
+                            <div className="p-3 bg-white/10 rounded-xl text-xl">🎓</div>
                             <div>
-                                <h3 className="text-3xl font-bold">85</h3>
-                                <p className="text-green-100 text-sm">Tenaga Pendidik</p>
+                                <h3 className="text-3xl font-bold tracking-tight">85</h3>
+                                <p className="text-emerald-200/80 text-sm">Tenaga Pendidik</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-5">
-                            <div className="p-3 bg-green-700 rounded-lg">🏆</div>
+                            <div className="p-3 bg-white/10 rounded-xl text-xl">🏆</div>
                             <div>
-                                <h3 className="text-3xl font-bold">150+</h3>
-                                <p className="text-green-100 text-sm">Prestasi Tahunan</p>
+                                <h3 className="text-3xl font-bold tracking-tight">150+</h3>
+                                <p className="text-emerald-200/80 text-sm">Prestasi Tahunan</p>
                             </div>
                         </div>
                     </div>
@@ -126,176 +148,146 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* PRESTASI UNGGULAN SECTION */}
-            <section className="px-8 md:px-20 py-20 bg-blue-50/50">
+            {/* PRESTASI / BERITA UNGGULAN SECTION */}
+            <section className="px-6 md:px-20 py-20 bg-white">
                 <div className="max-w-7xl mx-auto">
 
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
                         <div>
-                            <h2 className="text-3xl font-bold text-green-900 mb-2">Prestasi Unggulan</h2>
-                            <p className="text-gray-600">Dedikasi siswa dan guru dalam meraih kecemerlangan.</p>
+                            <span className="text-xs font-bold tracking-widest text-emerald-600 uppercase">Sorotan</span>
+                            <h2 className="text-3xl font-bold text-gray-900 mt-2 tracking-tight">Berita Unggulan</h2>
                         </div>
-                        <Link to="/prestasi" className="text-green-700 font-semibold hover:text-green-900 flex items-center gap-2">
+                        <Link to="/berita" className="text-emerald-700 font-semibold hover:text-emerald-900 flex items-center gap-2 transition-colors">
                             Lihat Semua <span>→</span>
                         </Link>
                     </div>
 
-                    {/* Grid 3 Kolom */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-                        {/* Card 1 */}
-                        <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-100">
-                            <div className="h-48 bg-gray-200 overflow-hidden">
-                                <img
-                                    src={
-                                        berita[0]?.imageUrl ||
-                                        `https://picsum.photos/800/600?random=${berita[0]?.id}`
-                                    }
-                                    alt={berita[0]?.title}
-                                />
-                            </div>
-                            <div className="p-6">
-                                <span className="text-xs font-bold text-green-800 tracking-wider">{berita[0]?.prestasi}</span>
-                                <h3 className="font-bold text-lg mt-2 mb-3 text-gray-900">{berita[0]?.title}</h3>
-                                <p className="text-sm text-gray-600 leading-relaxed">{berita[0]?.content}</p>
-                            </div>
+                    {loadingBerita ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {[1, 2, 3].map((i) => (
+                                <div key={i} className="rounded-2xl border border-gray-100 overflow-hidden animate-pulse">
+                                    <div className="h-48 bg-gray-100" />
+                                    <div className="p-6 space-y-3">
+                                        <div className="h-3 w-20 bg-gray-100 rounded" />
+                                        <div className="h-4 w-full bg-gray-100 rounded" />
+                                        <div className="h-3 w-3/4 bg-gray-100 rounded" />
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-
-                        {/* Card 2 */}
-                        <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-100">
-                            <div className="h-48 bg-gray-200 overflow-hidden">
-                                <img
-                                    src={
-                                        berita[1]?.imageUrl ||
-                                        `https://picsum.photos/800/600?random=${berita[1]?.id}`
-                                    }
-                                    alt={berita[1]?.title}
-                                />
-                            </div>
-                            <div className="p-6">
-                                <span className="text-xs font-bold text-blue-800 tracking-wider">{berita[1]?.prestasi}</span>
-                                <h3 className="font-bold text-lg mt-2 mb-3 text-gray-900">{berita[1]?.title}</h3>
-                                <p className="text-sm text-gray-600 leading-relaxed">{berita[1]?.content}</p>
-                            </div>
+                    ) : errorBerita ? (
+                        <p className="text-center text-red-500 text-sm">{errorBerita}</p>
+                    ) : unggulan.length === 0 ? (
+                        <p className="text-center text-gray-400 text-sm">Belum ada berita tersedia.</p>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {unggulan.map((item) => (
+                                <Link
+                                    to={`/berita/${item.slug}`}
+                                    key={item.id}
+                                    className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-emerald-100 shadow-sm hover:shadow-xl hover:shadow-emerald-900/5 transition-all duration-300"
+                                >
+                                    <div className="h-48 bg-gray-100 overflow-hidden">
+                                        <img
+                                            src={item.thumbnail || fallbackImage(item.id)}
+                                            alt={item.judul}
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                        />
+                                    </div>
+                                    <div className="p-6">
+                                        <span className="text-xs font-bold text-emerald-700 tracking-wider uppercase">
+                                            {item.kategori?.nama}
+                                        </span>
+                                        <h3 className="font-bold text-lg mt-2 mb-3 text-gray-900 leading-snug group-hover:text-emerald-800 transition-colors line-clamp-2">
+                                            {item.judul}
+                                        </h3>
+                                        <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">
+                                            {item.ringkasan || item.isi}
+                                        </p>
+                                    </div>
+                                </Link>
+                            ))}
                         </div>
-
-                        {/* Card 3 */}
-                        <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-100">
-                            <div className="h-48 bg-gray-200 overflow-hidden">
-                                <img
-                                    src={
-                                        berita[2]?.imageUrl ||
-                                        `https://picsum.photos/800/600?random=${berita[2]?.id}`
-                                    }
-                                    alt={berita[2]?.title}
-                                />
-                            </div>
-                            <div className="p-6">
-                                <span className="text-xs font-bold text-orange-800 tracking-wider">{berita[2]?.prestasi}</span>
-                                <h3 className="font-bold text-lg mt-2 mb-3 text-gray-900">{berita[2]?.title}</h3>
-                                <p className="text-sm text-gray-600 leading-relaxed">{berita[2]?.content}</p>
-                            </div>
-                        </div>
-
-                    </div>
+                    )}
                 </div>
             </section>
 
             {/* BERITA & ARTIKEL TERBARU */}
-            <section className="px-8 md:px-20 py-20 bg-white">
+            <section className="px-6 md:px-20 py-20 bg-gray-50">
                 <div className="max-w-7xl mx-auto">
 
-                    <h2 className="text-3xl font-bold text-center text-green-900 mb-12">
-                        Berita & Artikel Terbaru
-                    </h2>
+                    <div className="text-center mb-14">
+                        <span className="text-xs font-bold tracking-widest text-emerald-600 uppercase">Update Terkini</span>
+                        <h2 className="text-3xl font-bold text-gray-900 mt-2 tracking-tight">
+                            Berita &amp; Artikel Terbaru
+                        </h2>
+                    </div>
 
                     {loadingBerita ? (
-                        <div className="text-center">
-                            Memuat berita...
-                        </div>
+                        <div className="text-center text-gray-400 text-sm">Memuat berita...</div>
+                    ) : errorBerita ? (
+                        <div className="text-center text-red-500 text-sm">{errorBerita}</div>
                     ) : berita.length === 0 ? (
-                        <div className="text-center text-gray-500">
-                            Belum ada berita tersedia.
-                        </div>
+                        <div className="text-center text-gray-400 text-sm">Belum ada berita tersedia.</div>
                     ) : (
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
                             {/* Berita Utama */}
-                            <div className="relative rounded-xl overflow-hidden h-112.5 group cursor-pointer shadow-sm">
+                            {utama && (
+                                <Link
+                                    to={`/berita/${utama.slug}`}
+                                    className="relative rounded-2xl overflow-hidden h-[450px] group cursor-pointer shadow-sm block"
+                                >
+                                    <img
+                                        src={utama.thumbnail || fallbackImage(utama.id)}
+                                        alt={utama.judul}
+                                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
 
-                                <img
-                                    src={
-                                        berita[0]?.imageUrl ||
-                                        `https://picsum.photos/800/600?random=${berita[0]?.id}`
-                                    }
-                                    alt={berita[0]?.title}
-                                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                />
-
-                                <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent"></div>
-
-                                <div className="absolute bottom-0 left-0 p-8 text-white w-full">
-
-                                    <span className="bg-green-600 px-3 py-1 text-xs font-bold rounded">
-                                        BERITA
-                                    </span>
-
-                                    <h3 className="text-2xl font-bold mt-4 mb-3">
-                                        {berita[0]?.title}
-                                    </h3>
-
-                                    <p className="text-sm text-gray-300 line-clamp-3">
-                                        {berita[0]?.content}
-                                    </p>
-                                </div>
-                            </div>
+                                    <div className="absolute bottom-0 left-0 p-8 text-white w-full">
+                                        <span className="bg-emerald-500 text-emerald-950 px-3 py-1 text-xs font-bold rounded-full">
+                                            {utama.kategori?.nama || 'BERITA'}
+                                        </span>
+                                        <h3 className="text-2xl font-bold mt-4 mb-3 leading-tight">
+                                            {utama.judul}
+                                        </h3>
+                                        <p className="text-sm text-gray-300 line-clamp-2">
+                                            {utama.ringkasan || utama.isi}
+                                        </p>
+                                    </div>
+                                </Link>
+                            )}
 
                             {/* List Berita */}
-                            <div className="flex flex-col gap-6">
-
-                                {berita.slice(1, 4).map((item) => (
-                                    <div
+                            <div className="flex flex-col gap-4">
+                                {sampingan.map((item) => (
+                                    <Link
+                                        to={`/berita/${item.slug}`}
                                         key={item.id}
-                                        className="flex gap-6 group cursor-pointer bg-white p-2 rounded-xl hover:bg-gray-50 transition-colors"
+                                        className="flex gap-5 group cursor-pointer bg-white p-3 rounded-2xl border border-gray-100 hover:border-emerald-100 hover:shadow-md transition-all"
                                     >
-                                        <div className="w-40 h-28 bg-gray-200 rounded-lg overflow-hidden shrink-0">
-
+                                        <div className="w-36 h-28 bg-gray-100 rounded-xl overflow-hidden shrink-0">
                                             <img
-                                                src={
-                                                    item.imageUrl ||
-                                                    `https://picsum.photos/300/200?random=${item.id}`
-                                                }
-                                                alt={item.title}
-                                                className="w-full h-full object-cover"
+                                                src={item.thumbnail || fallbackImage(item.id)}
+                                                alt={item.judul}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                             />
-
                                         </div>
 
-                                        <div className="flex flex-col justify-center">
-
-                                            <span className="text-xs text-green-700 font-bold mb-1">
-                                                {new Date(item.createdAt).toLocaleDateString(
-                                                    'id-ID',
-                                                    {
-                                                        day: 'numeric',
-                                                        month: 'short',
-                                                        year: 'numeric',
-                                                    }
-                                                )}
+                                        <div className="flex flex-col justify-center py-1">
+                                            <span className="text-xs text-emerald-700 font-bold mb-1.5">
+                                                {formatTanggal(item.createdAt)}
                                             </span>
-
-                                            <h4 className="font-bold text-gray-900 leading-tight mb-2 group-hover:text-green-700 transition-colors">
-                                                {item.title}
+                                            <h4 className="font-bold text-gray-900 leading-snug mb-1.5 group-hover:text-emerald-800 transition-colors line-clamp-2">
+                                                {item.judul}
                                             </h4>
-
-                                            <p className="text-sm text-gray-500 line-clamp-2">
-                                                {item.content}
+                                            <p className="text-sm text-gray-400 line-clamp-2">
+                                                {item.ringkasan || item.isi}
                                             </p>
-
                                         </div>
-                                    </div>
+                                    </Link>
                                 ))}
-
                             </div>
 
                         </div>
@@ -304,12 +296,15 @@ const Home = () => {
             </section>
 
             {/* CALL TO ACTION SECTION */}
-            <section className="bg-green-900 text-white text-center py-24 px-8 border-t border-green-800">
+            <section className="bg-emerald-950 text-white text-center py-24 px-8 border-t border-emerald-900">
                 <div className="max-w-3xl mx-auto">
-                    <h2 className="text-4xl font-bold mb-6">Siap Menjadi Bagian Dari Kami?</h2>
-                    <p className="text-green-100 text-lg">
+                    <h2 className="text-4xl font-bold mb-6 tracking-tight">Siap Menjadi Bagian Dari Kami?</h2>
+                    <p className="text-emerald-100/80 text-lg mb-10 font-light">
                         Pendaftaran Peserta Didik Baru (PPDB) Tahun Ajaran 2024/2025 telah dibuka. Segera amankan kursi Anda.
                     </p>
+                    <button className="bg-emerald-500 hover:bg-emerald-400 text-emerald-950 px-9 py-3.5 rounded-full text-sm font-semibold transition-all hover:shadow-lg hover:shadow-emerald-500/20">
+                        Daftar Sekarang
+                    </button>
                 </div>
             </section>
 
