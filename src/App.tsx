@@ -7,6 +7,8 @@ import Kontak from './pages/Kontak';
 import AdminBeritaPage from './pages/Admin';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/Register';
+import BeritaDetail from './pages/DetailBerita';
+import BeritaList from './pages/AllBerita';
 
 // Konfigurasi routing
 const router = createBrowserRouter([
@@ -40,8 +42,20 @@ const router = createBrowserRouter([
         element: <RegisterPage />,
       },
       {
+        path: 'berita/:slug',
+        element: <BeritaDetail />
+      },
+      {
+        path: 'AllBerita',
+        element: <BeritaList />
+      },
+      {
         path: 'AdminBeritaPage',
         element: <AdminBeritaPage />
+      },
+      {
+        path: '/Berita',
+        element: <BeritaList />
       }
       // Anda bisa menambahkan route lain di sini...
     ],
