@@ -3,19 +3,19 @@ const Footer = () => {
         <footer className="bg-green-950 text-white pt-16 pb-8 px-8 md:px-20">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 max-w-7xl mx-auto px-9">
                 <iframe
-                src="https://www.youtube.com/embed/5TNDs_2Ar5g?si=hdibM6eKmmv4b83E" 
+                src="https://www.youtube.com/embed/gV3bHotDFZw?si=NLglIW8zAm4SRzeF"
                 title="YouTube video player" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                 referrerPolicy="strict-origin-when-cross-origin" 
                 allowFullScreen></iframe>
                 <iframe
-                src="https://www.youtube.com/embed/DJJos7u5qlk?si=tfOWHycjyHC-bLo-"
+                src="https://www.youtube.com/embed/5kB8a-1KRvU?si=k_sXUJipghjmtSXA"
                 title="YouTube video player" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                 referrerPolicy="strict-origin-when-cross-origin" 
                 allowFullScreen></iframe>
                 <iframe
-                src="https://www.youtube.com/embed/tGv7CUutzqU?si=cioJnPs7rx831P" 
+                src="https://www.youtube.com/embed/rmHIvL9y9a4?si=uw3CeYP2EwSZrYCN"
                 title="YouTube video player" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                 referrerPolicy="strict-origin-when-cross-origin" 

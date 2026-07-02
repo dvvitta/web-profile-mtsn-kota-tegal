@@ -1,12 +1,7 @@
 import React, { useState, useEffect, type FormEvent, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
-// ============================================================
-// KONFIGURASI
-// ============================================================
-// Using a fallback for the sandbox environment to avoid import.meta errors
-const API_BASE_URL = "http://localhost:3000";
-// ============================================================
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 interface Kategori {
     id: number;
@@ -28,6 +23,7 @@ interface Berita {
 }
 
 type Tab = "berita" | "kategori";
+type AlertState = { type: "error" | "success"; message: string } | null;
 
 function authHeaders(token: string) {
     return {
@@ -36,29 +32,180 @@ function authHeaders(token: string) {
     };
 }
 
-const IconNews = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" />
-        <path d="M18 14h-8" /><path d="M15 18h-5" /><path d="M10 6h8v4h-8V6Z" />
-    </svg>
-);
+// ─── Reusable field components ───────────────────────────────
 
-const IconFolder = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />
-    </svg>
-);
+const inputClass =
+    "w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg bg-gray-50 text-gray-800 outline-none focus:border-emerald-600 focus:bg-white transition-colors";
 
-const IconTrash = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /><line x1="10" x2="10" y1="11" y2="17" /><line x1="14" x2="14" y1="11" y2="17" />
-    </svg>
-);
+function Alert({ alert }: { alert: AlertState }) {
+    if (!alert) return null;
+    return (
+        <div
+            className={`text-sm px-3.5 py-2.5 rounded-lg mb-4 border ${alert.type === "error"
+                    ? "bg-red-50 border-red-200 text-red-700"
+                    : "bg-emerald-50 border-emerald-200 text-emerald-800"
+                }`}
+        >
+            {alert.message}
+        </div>
+    );
+}
+
+function SkeletonList() {
+    return (
+        <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+                <div key={i} className="p-3.5 border border-gray-100 rounded-lg animate-pulse">
+                    <div className="h-3.5 bg-gray-100 rounded w-2/3 mb-2" />
+                    <div className="h-3 bg-gray-100 rounded w-1/3" />
+                </div>
+            ))}
+        </div>
+    );
+}
+
+// ─── Modal Edit Berita ────────────────────────────────────────
+
+interface EditModalProps {
+    berita: Berita;
+    kategoriList: Kategori[];
+    token: string;
+    onClose: () => void;
+    onSuccess: () => void;
+}
+
+function EditBeritaModal({ berita, kategoriList, token, onClose, onSuccess }: EditModalProps) {
+    const [judul, setJudul] = useState(berita.judul);
+    const [ringkasan, setRingkasan] = useState(berita.ringkasan ?? "");
+    const [thumbnail, setThumbnail] = useState(berita.thumbnail ?? "");
+    const [isi, setIsi] = useState(berita.isi);
+    const [kategoriId, setKategoriId] = useState(String(berita.kategori?.id ?? ""));
+    const [submitting, setSubmitting] = useState(false);
+    const [alert, setAlert] = useState<AlertState>(null);
+
+    const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (e.target === e.currentTarget) onClose();
+    };
+
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setAlert(null);
+
+        if (!judul.trim() || !isi.trim() || !kategoriId) {
+            setAlert({ type: "error", message: "Judul, isi, dan kategori wajib diisi." });
+            return;
+        }
+
+        setSubmitting(true);
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/berita/${berita.id}`, {
+                method: "PUT",
+                headers: authHeaders(token),
+                body: JSON.stringify({
+                    judul: judul.trim(),
+                    ringkasan: ringkasan.trim() || undefined,
+                    thumbnail: thumbnail.trim() || undefined,
+                    isi: isi.trim(),
+                    kategoriId,
+                }),
+            });
+            const data = await res.json();
+
+            if (!res.ok || !data.success) {
+                setAlert({ type: "error", message: data.message || "Gagal menyimpan perubahan." });
+                return;
+            }
+
+            setAlert({ type: "success", message: "Berita berhasil diperbarui." });
+            setTimeout(() => { onSuccess(); onClose(); }, 700);
+        } catch {
+            setAlert({ type: "error", message: "Tidak dapat terhubung ke server." });
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    return (
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-emerald-950/50 backdrop-blur-sm p-4"
+            onClick={handleBackdropClick}
+        >
+            <div className="bg-white w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-xl border border-gray-200 shadow-2xl shadow-black/10 animate-[modal-in_0.18s_ease]">
+                {/* Modal header */}
+                <div className="flex justify-between items-center px-6 pt-5 pb-4 border-b border-gray-100">
+                    <h2 className="text-lg font-bold text-gray-900">Edit Berita</h2>
+                    <button
+                        onClick={onClose}
+                        className="text-gray-400 hover:text-gray-700 hover:bg-gray-100 w-8 h-8 flex items-center justify-center rounded-lg transition-colors text-lg leading-none"
+                    >
+                        ✕
+                    </button>
+                </div>
+
+                {/* Modal body */}
+                <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
+                    <Alert alert={alert} />
+
+                    <div>
+                        <label className="block text-xs font-semibold text-gray-700 mb-1.5">Judul</label>
+                        <input className={inputClass} value={judul} onChange={(e) => setJudul(e.target.value)} placeholder="Judul berita" />
+                    </div>
+
+                    <div>
+                        <label className="block text-xs font-semibold text-gray-700 mb-1.5">Kategori</label>
+                        <select className={inputClass} value={kategoriId} onChange={(e) => setKategoriId(e.target.value)}>
+                            <option value="">Pilih kategori</option>
+                            {kategoriList.map((k) => (
+                                <option key={k.id} value={k.id}>{k.nama}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label className="block text-xs font-semibold text-gray-700 mb-1.5">Ringkasan</label>
+                        <input className={inputClass} value={ringkasan} onChange={(e) => setRingkasan(e.target.value)} placeholder="Ringkasan singkat (opsional)" />
+                    </div>
+
+                    <div>
+                        <label className="block text-xs font-semibold text-gray-700 mb-1.5">URL Thumbnail</label>
+                        <input className={inputClass} value={thumbnail} onChange={(e) => setThumbnail(e.target.value)} placeholder="https://... (opsional)" />
+                    </div>
+
+                    <div>
+                        <label className="block text-xs font-semibold text-gray-700 mb-1.5">Isi Berita</label>
+                        <textarea className={inputClass} value={isi} onChange={(e) => setIsi(e.target.value)} rows={7} placeholder="Tulis isi berita di sini..." />
+                    </div>
+
+                    {/* Modal footer */}
+                    <div className="flex justify-end gap-2.5 pt-2 border-t border-gray-100 mt-2">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            disabled={submitting}
+                            className="px-5 py-2.5 text-sm font-semibold border border-gray-200 rounded-lg text-gray-700 hover:border-gray-300 transition-colors disabled:opacity-50"
+                        >
+                            Batal
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={submitting}
+                            className="px-5 py-2.5 text-sm font-semibold bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg transition-colors disabled:opacity-60"
+                        >
+                            {submitting ? "Menyimpan..." : "Simpan Perubahan"}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}
+
+// ─── Dashboard Utama ─────────────────────────────────────────
 
 export default function DashboardPage() {
     const navigate = useNavigate();
     const [token, setToken] = useState<string | null>(null);
-    const [userName, setUserName] = useState<string>("");
+    const [userName, setUserName] = useState("");
     const [tab, setTab] = useState<Tab>("berita");
 
     const [berita, setBerita] = useState<Berita[]>([]);
@@ -66,44 +213,37 @@ export default function DashboardPage() {
     const [loadingList, setLoadingList] = useState(true);
     const [listError, setListError] = useState<string | null>(null);
 
-    // Form berita
+    const [editTarget, setEditTarget] = useState<Berita | null>(null);
+
+    // form create berita
     const [judul, setJudul] = useState("");
     const [ringkasan, setRingkasan] = useState("");
     const [thumbnail, setThumbnail] = useState("");
     const [isi, setIsi] = useState("");
     const [kategoriId, setKategoriId] = useState("");
     const [beritaSubmitting, setBeritaSubmitting] = useState(false);
-    const [beritaAlert, setBeritaAlert] = useState<{ type: "error" | "success"; message: string } | null>(null);
+    const [beritaAlert, setBeritaAlert] = useState<AlertState>(null);
 
-    // Form kategori
+    // form create kategori
     const [namaKategori, setNamaKategori] = useState("");
     const [kategoriSubmitting, setKategoriSubmitting] = useState(false);
-    const [kategoriAlert, setKategoriAlert] = useState<{ type: "error" | "success"; message: string } | null>(null);
+    const [kategoriAlert, setKategoriAlert] = useState<AlertState>(null);
 
+    // ── Auth guard ──
     useEffect(() => {
         const storedToken = localStorage.getItem("token");
         const storedUser = localStorage.getItem("user");
-
-        if (!storedToken) {
-            navigate("/login");
-            return;
-        }
+        if (!storedToken) { navigate("/login"); return; }
 
         setToken(storedToken);
         if (storedUser) {
-            try {
-                setUserName(JSON.parse(storedUser).nama ?? "");
-            } catch {
-                // abaikan jika parsing gagal
-            }
+            try { setUserName(JSON.parse(storedUser).nama ?? ""); } catch { /* ignore */ }
         }
 
-        fetch(`${API_BASE_URL}/api/auth/me`, {
-            headers: { Authorization: `Bearer ${storedToken}` },
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                if (!data.success) {
+        fetch(`${API_BASE_URL}/api/auth/me`, { headers: { Authorization: `Bearer ${storedToken}` } })
+            .then((r) => r.json())
+            .then((d) => {
+                if (!d.success) {
                     localStorage.removeItem("token");
                     localStorage.removeItem("user");
                     navigate("/login");
@@ -118,108 +258,73 @@ export default function DashboardPage() {
         navigate("/login");
     };
 
+    // ── Fetch data ──
     const fetchData = useCallback(async () => {
         setLoadingList(true);
         setListError(null);
         try {
-            const [beritaRes, kategoriRes] = await Promise.all([
+            const [bRes, kRes] = await Promise.all([
                 fetch(`${API_BASE_URL}/api/berita`),
                 fetch(`${API_BASE_URL}/api/kategori`),
             ]);
-            const beritaData = await beritaRes.json();
-            const kategoriData = await kategoriRes.json();
-
-            if (beritaData.success) setBerita(beritaData.data);
-            if (kategoriData.success) setKategori(kategoriData.data);
-
-            if (!beritaData.success || !kategoriData.success) {
-                setListError("Sebagian data gagal dimuat.");
-            }
-        } catch (err) {
-            console.error(err);
+            const bData = await bRes.json();
+            const kData = await kRes.json();
+            if (bData.success) setBerita(bData.data);
+            if (kData.success) setKategori(kData.data);
+            if (!bData.success || !kData.success) setListError("Sebagian data gagal dimuat.");
+        } catch {
             setListError("Tidak dapat terhubung ke server.");
         } finally {
             setLoadingList(false);
         }
     }, []);
 
-    useEffect(() => {
-        if (token) fetchData();
-    }, [token, fetchData]);
+    useEffect(() => { if (token) fetchData(); }, [token, fetchData]);
 
+    // ── Create berita ──
     const handleCreateBerita = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setBeritaAlert(null);
-
         if (!judul.trim() || !isi.trim() || !kategoriId) {
             setBeritaAlert({ type: "error", message: "Judul, isi, dan kategori wajib diisi." });
             return;
         }
         if (!token) return;
-
         setBeritaSubmitting(true);
         try {
             const res = await fetch(`${API_BASE_URL}/api/berita`, {
                 method: "POST",
                 headers: authHeaders(token),
-                body: JSON.stringify({
-                    judul: judul.trim(),
-                    ringkasan: ringkasan.trim() || undefined,
-                    thumbnail: thumbnail.trim() || undefined,
-                    isi: isi.trim(),
-                    kategoriId,
-                }),
+                body: JSON.stringify({ judul: judul.trim(), ringkasan: ringkasan.trim() || undefined, thumbnail: thumbnail.trim() || undefined, isi: isi.trim(), kategoriId }),
             });
             const data = await res.json();
-
-            if (!res.ok || !data.success) {
-                setBeritaAlert({ type: "error", message: data.message || "Gagal membuat berita." });
-                return;
-            }
-
+            if (!res.ok || !data.success) { setBeritaAlert({ type: "error", message: data.message || "Gagal membuat berita." }); return; }
             setBeritaAlert({ type: "success", message: "Berita berhasil dipublikasikan." });
-            setJudul("");
-            setRingkasan("");
-            setThumbnail("");
-            setIsi("");
-            setKategoriId("");
+            setJudul(""); setRingkasan(""); setThumbnail(""); setIsi(""); setKategoriId("");
             fetchData();
-        } catch (err) {
-            console.error(err);
+        } catch {
             setBeritaAlert({ type: "error", message: "Tidak dapat terhubung ke server." });
         } finally {
             setBeritaSubmitting(false);
         }
     };
 
+    // ── Delete berita ──
     const handleDeleteBerita = async (id: number) => {
-        if (!token) return;
-        if (!confirm("Hapus berita ini?")) return;
-
+        if (!token || !confirm("Hapus berita ini?")) return;
         try {
-            const res = await fetch(`${API_BASE_URL}/api/berita/${id}`, {
-                method: "DELETE",
-                headers: authHeaders(token),
-            });
+            const res = await fetch(`${API_BASE_URL}/api/berita/${id}`, { method: "DELETE", headers: authHeaders(token) });
             const data = await res.json();
-            if (data.success) fetchData();
-            else alert(data.message || "Gagal menghapus berita.");
-        } catch (err) {
-            console.error(err);
-            alert("Tidak dapat terhubung ke server.");
-        }
+            if (data.success) fetchData(); else alert(data.message || "Gagal menghapus berita.");
+        } catch { alert("Tidak dapat terhubung ke server."); }
     };
 
+    // ── Create kategori ──
     const handleCreateKategori = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setKategoriAlert(null);
-
-        if (!namaKategori.trim()) {
-            setKategoriAlert({ type: "error", message: "Nama kategori wajib diisi." });
-            return;
-        }
+        if (!namaKategori.trim()) { setKategoriAlert({ type: "error", message: "Nama kategori wajib diisi." }); return; }
         if (!token) return;
-
         setKategoriSubmitting(true);
         try {
             const res = await fetch(`${API_BASE_URL}/api/kategori`, {
@@ -228,321 +333,217 @@ export default function DashboardPage() {
                 body: JSON.stringify({ nama: namaKategori.trim() }),
             });
             const data = await res.json();
-
-            if (!res.ok || !data.success) {
-                setKategoriAlert({ type: "error", message: data.message || "Gagal membuat kategori." });
-                return;
-            }
-
+            if (!res.ok || !data.success) { setKategoriAlert({ type: "error", message: data.message || "Gagal membuat kategori." }); return; }
             setKategoriAlert({ type: "success", message: "Kategori berhasil dibuat." });
             setNamaKategori("");
             fetchData();
-        } catch (err) {
-            console.error(err);
+        } catch {
             setKategoriAlert({ type: "error", message: "Tidak dapat terhubung ke server." });
         } finally {
             setKategoriSubmitting(false);
         }
     };
 
+    // ── Delete kategori ──
     const handleDeleteKategori = async (id: number) => {
-        if (!token) return;
-        if (!confirm("Hapus kategori ini? Berita dengan kategori ini bisa terpengaruh.")) return;
-
+        if (!token || !confirm("Hapus kategori ini? Berita terkait bisa terpengaruh.")) return;
         try {
-            const res = await fetch(`${API_BASE_URL}/api/kategori/${id}`, {
-                method: "DELETE",
-                headers: authHeaders(token),
-            });
+            const res = await fetch(`${API_BASE_URL}/api/kategori/${id}`, { method: "DELETE", headers: authHeaders(token) });
             const data = await res.json();
-            if (data.success) fetchData();
-            else alert(data.message || "Gagal menghapus kategori.");
-        } catch (err) {
-            console.error(err);
-            alert("Tidak dapat terhubung ke server.");
-        }
+            if (data.success) fetchData(); else alert(data.message || "Gagal menghapus kategori.");
+        } catch { alert("Tidak dapat terhubung ke server."); }
     };
 
-    if (!token) return null; // Sedang redirect ke /login
+    if (!token) return null;
 
     return (
-        <div className="flex h-screen bg-slate-50 font-sans text-slate-900 overflow-hidden">
+        <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
+            {editTarget && token && (
+                <EditBeritaModal
+                    berita={editTarget}
+                    kategoriList={kategori}
+                    token={token}
+                    onClose={() => setEditTarget(null)}
+                    onSuccess={fetchData}
+                />
+            )}
 
-            {/* SIDEBAR */}
-            <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between shadow-xl z-10 flex-shrink-0">
+            {/* ── Header ── */}
+            <header className="bg-white border-b border-gray-200 px-6 md:px-10 py-4 flex justify-between items-center gap-4 flex-wrap">
                 <div>
-                    <div className="p-6 border-b border-slate-800">
-                        <h2 className="text-xl font-bold text-white tracking-tight">Admin Portal</h2>
-                        <p className="text-xs text-slate-400 mt-1">MTsN Kota Tegal</p>
-                    </div>
-                    <nav className="p-4 space-y-2 mt-4">
-                        <button
-                            onClick={() => setTab("berita")}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${tab === "berita"
-                                ? "bg-blue-600 text-white shadow-md shadow-blue-500/20"
-                                : "hover:bg-slate-800 hover:text-white"
-                                }`}
-                        >
-                            <IconNews />
-                            <span className="font-medium">Manajemen Berita</span>
-                        </button>
-                        <button
-                            onClick={() => setTab("kategori")}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${tab === "kategori"
-                                ? "bg-blue-600 text-white shadow-md shadow-blue-500/20"
-                                : "hover:bg-slate-800 hover:text-white"
-                                }`}
-                        >
-                            <IconFolder />
-                            <span className="font-medium">Kategori Topik</span>
-                        </button>
-                    </nav>
+                    <p className="text-xs font-bold tracking-widest text-emerald-600 uppercase mb-0.5">
+                        Portal Internal · MTsN Kota Tegal
+                    </p>
+                    <h1 className="text-xl font-bold text-gray-900 leading-tight">Dashboard Admin</h1>
                 </div>
-
-                <div className="p-4 border-t border-slate-800 m-4 rounded-2xl bg-slate-800/50">
-                    <div className="flex items-center gap-3 mb-4 px-2">
-                        <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-sm">
-                            {userName ? userName.charAt(0).toUpperCase() : "A"}
-                        </div>
-                        <div className="flex-1 overflow-hidden">
-                            <p className="text-sm font-semibold text-white truncate">{userName || "Admin"}</p>
-                            <p className="text-xs text-slate-400">Administrator</p>
-                        </div>
-                    </div>
+                <div className="flex items-center gap-4 text-sm">
+                    {userName && <span className="text-gray-500">Halo, <span className="font-semibold text-gray-800">{userName}</span></span>}
                     <button
                         onClick={handleLogout}
-                        className="w-full text-sm text-red-400 hover:text-red-300 hover:bg-red-400/10 py-2 rounded-lg transition-colors font-medium text-center"
+                        className="px-4 py-2 text-sm font-semibold border border-gray-200 rounded-lg text-gray-700 hover:border-red-200 hover:text-red-600 transition-colors"
                     >
-                        Keluar Sesi
+                        Keluar
                     </button>
                 </div>
-            </aside>
+            </header>
 
-            {/* MAIN CONTENT AREA */}
-            <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
+            <main className="px-6 md:px-10 py-8 max-w-7xl mx-auto">
+                {listError && (
+                    <div className="mb-6 text-sm px-3.5 py-2.5 rounded-lg border bg-red-50 border-red-200 text-red-700">
+                        {listError}
+                    </div>
+                )}
 
-                {/* Header Content */}
-                <header className="bg-white border-b border-slate-200 px-8 py-6 flex-shrink-0">
-                    <h1 className="text-2xl font-bold text-slate-800">
-                        {tab === "berita" ? "Manajemen Berita" : "Kategori Topik"}
-                    </h1>
-                    <p className="text-sm text-slate-500 mt-1">
-                        {tab === "berita"
-                            ? "Tulis, edit, dan kelola publikasi berita sekolah."
-                            : "Kelola label kategori untuk mengelompokkan berita."}
-                    </p>
-                </header>
-
-                {/* Scrollable Content Body */}
-                <div className="flex-1 overflow-y-auto p-8">
-                    {listError && (
-                        <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 flex items-center gap-3">
-                            <span className="font-semibold">Error:</span> {listError}
-                        </div>
-                    )}
-
-                    { }
-                    {tab === "berita" && (
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-                            {/* KOLOM KIRI: FORM */}
-                            <section className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                                <h2 className="text-lg font-bold border-b border-slate-100 pb-4 mb-6">Tulis Berita Baru</h2>
-
-                                {beritaAlert && (
-                                    <div className={`mb-6 p-4 rounded-xl text-sm font-medium border ${beritaAlert.type === 'success' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'
-                                        }`}>
-                                        {beritaAlert.message}
-                                    </div>
-                                )}
-
-                                <form onSubmit={handleCreateBerita} className="space-y-5">
-                                    <div>
-                                        <label htmlFor="judul" className="block text-sm font-semibold text-slate-700 mb-1.5">Judul Berita</label>
-                                        <input
-                                            id="judul" value={judul} onChange={(e) => setJudul(e.target.value)}
-                                            placeholder="Masukkan judul berita yang menarik..."
-                                            className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-slate-700"
-                                        />
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                        <div>
-                                            <label htmlFor="kategoriId" className="block text-sm font-semibold text-slate-700 mb-1.5">Kategori</label>
-                                            <select
-                                                id="kategoriId" value={kategoriId} onChange={(e) => setKategoriId(e.target.value)}
-                                                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-slate-700 bg-white"
-                                            >
-                                                <option value="">-- Pilih Kategori --</option>
-                                                {kategori.map((k) => (
-                                                    <option key={k.id} value={k.id}>{k.nama}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label htmlFor="thumbnail" className="block text-sm font-semibold text-slate-700 mb-1.5">URL Thumbnail (Opsional)</label>
-                                            <input
-                                                id="thumbnail" value={thumbnail} onChange={(e) => setThumbnail(e.target.value)}
-                                                placeholder="https://contoh.com/gambar.jpg"
-                                                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-slate-700"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="ringkasan" className="block text-sm font-semibold text-slate-700 mb-1.5">Ringkasan Singkat (Opsional)</label>
-                                        <input
-                                            id="ringkasan" value={ringkasan} onChange={(e) => setRingkasan(e.target.value)}
-                                            placeholder="Ringkasan 1-2 kalimat untuk preview..."
-                                            className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-slate-700"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="isi" className="block text-sm font-semibold text-slate-700 mb-1.5">Isi Berita</label>
-                                        <textarea
-                                            id="isi" value={isi} onChange={(e) => setIsi(e.target.value)} rows={10}
-                                            placeholder="Tulis paragraf berita Anda di sini..."
-                                            className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-slate-700 resize-y"
-                                        />
-                                    </div>
-
-                                    <div className="pt-2">
-                                        <button
-                                            type="submit"
-                                            disabled={beritaSubmitting}
-                                            className="w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-sm shadow-blue-500/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
-                                        >
-                                            {beritaSubmitting ? "Menyimpan Berita..." : "Publikasikan Berita"}
-                                        </button>
-                                    </div>
-                                </form>
-                            </section>
-
-                            {/* KOLOM KANAN: DAFTAR BERITA */}
-                            <section className="lg:col-span-1 bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col max-h-[800px]">
-                                <div className="p-6 border-b border-slate-100 shrink-0">
-                                    <h2 className="text-lg font-bold text-slate-800">Daftar Publikasi</h2>
-                                    <p className="text-xs text-slate-500 mt-1">Berita yang telah diterbitkan</p>
-                                </div>
-
-                                <div className="p-4 overflow-y-auto flex-1">
-                                    {loadingList ? (
-                                        <div className="flex justify-center items-center h-32">
-                                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                                        </div>
-                                    ) : berita.length === 0 ? (
-                                        <div className="text-center py-10 px-4">
-                                            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 text-slate-400 mb-3">
-                                                <IconNews />
-                                            </div>
-                                            <p className="text-sm font-medium text-slate-600">Belum ada berita</p>
-                                            <p className="text-xs text-slate-400 mt-1">Berita yang Anda publikasikan akan muncul di sini.</p>
-                                        </div>
-                                    ) : (
-                                        <ul className="space-y-3">
-                                            {berita.map((b) => (
-                                                <li key={b.id} className="group p-4 rounded-xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-slate-300 hover:shadow-sm transition-all flex flex-col gap-3">
-                                                    <div>
-                                                        <h3 className="font-semibold text-slate-800 text-sm line-clamp-2 leading-snug">{b.judul}</h3>
-                                                        <div className="flex items-center gap-2 mt-2 text-[11px] font-medium text-slate-500">
-                                                            <span className="bg-slate-200/70 px-2 py-0.5 rounded-md text-slate-600">{b.kategori?.nama}</span>
-                                                            <span>&middot;</span>
-                                                            <span>{b.user?.nama}</span>
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex justify-end border-t border-slate-200 pt-3 mt-1">
-                                                        <button
-                                                            onClick={() => handleDeleteBerita(b.id)}
-                                                            className="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors"
-                                                        >
-                                                            <IconTrash /> Hapus
-                                                        </button>
-                                                    </div>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    )}
-                                </div>
-                            </section>
-                        </div>
-                    )}
-
-                    { }
-                    {tab === "kategori" && (
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl">
-
-                            {/* FORM KATEGORI */}
-                            <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 h-fit">
-                                <h2 className="text-lg font-bold border-b border-slate-100 pb-4 mb-6">Tambah Kategori Baru</h2>
-
-                                {kategoriAlert && (
-                                    <div className={`mb-6 p-4 rounded-xl text-sm font-medium border ${kategoriAlert.type === 'success' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'
-                                        }`}>
-                                        {kategoriAlert.message}
-                                    </div>
-                                )}
-
-                                <form onSubmit={handleCreateKategori} className="space-y-5">
-                                    <div>
-                                        <label htmlFor="namaKategori" className="block text-sm font-semibold text-slate-700 mb-1.5">Nama Kategori</label>
-                                        <input
-                                            id="namaKategori" value={namaKategori} onChange={(e) => setNamaKategori(e.target.value)}
-                                            placeholder="Misal: Prestasi, Pengumuman, Ekstrakurikuler..."
-                                            className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-slate-700"
-                                        />
-                                    </div>
-                                    <button
-                                        type="submit"
-                                        disabled={kategoriSubmitting}
-                                        className="w-full px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-sm shadow-blue-500/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
-                                    >
-                                        {kategoriSubmitting ? "Menyimpan..." : "Simpan Kategori"}
-                                    </button>
-                                </form>
-                            </section>
-
-                            {/* DAFTAR KATEGORI */}
-                            <section className="bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col h-fit max-h-[600px]">
-                                <div className="p-6 border-b border-slate-100 shrink-0">
-                                    <h2 className="text-lg font-bold text-slate-800">Daftar Kategori</h2>
-                                    <p className="text-xs text-slate-500 mt-1">Kelola kategori yang sudah ada</p>
-                                </div>
-
-                                <div className="p-4 overflow-y-auto">
-                                    {loadingList ? (
-                                        <div className="flex justify-center items-center h-20">
-                                            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-                                        </div>
-                                    ) : kategori.length === 0 ? (
-                                        <div className="text-center py-8">
-                                            <p className="text-sm text-slate-500">Belum ada kategori terdaftar.</p>
-                                        </div>
-                                    ) : (
-                                        <ul className="space-y-2">
-                                            {kategori.map((k) => (
-                                                <li key={k.id} className="group flex items-center justify-between p-3.5 rounded-xl border border-slate-200 hover:border-blue-300 hover:shadow-sm bg-slate-50 hover:bg-white transition-all">
-                                                    <div>
-                                                        <p className="font-semibold text-slate-800 text-sm">{k.nama}</p>
-                                                        <p className="text-xs text-slate-400 mt-0.5 font-mono">/{k.slug}</p>
-                                                    </div>
-                                                    <button
-                                                        onClick={() => handleDeleteKategori(k.id)}
-                                                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                                        title="Hapus Kategori"
-                                                    >
-                                                        <IconTrash />
-                                                    </button>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    )}
-                                </div>
-                            </section>
-                        </div>
-                    )}
-
+                {/* ── Tabs ── */}
+                <div className="flex gap-1 border-b border-gray-200 mb-8">
+                    {(["berita", "kategori"] as Tab[]).map((t) => (
+                        <button
+                            key={t}
+                            onClick={() => setTab(t)}
+                            className={`px-5 py-2.5 text-sm font-semibold capitalize border-b-2 transition-colors -mb-px ${tab === t
+                                    ? "border-emerald-600 text-emerald-700"
+                                    : "border-transparent text-gray-400 hover:text-gray-700"
+                                }`}
+                        >
+                            {t === "berita" ? "Berita" : "Kategori"}
+                        </button>
+                    ))}
                 </div>
+
+                {/* ── TAB BERITA ── */}
+                {tab === "berita" && (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                        {/* Form create */}
+                        <section className="bg-white border border-gray-200 rounded-xl p-6">
+                            <h2 className="text-base font-bold text-gray-900 mb-5">Tulis Berita Baru</h2>
+                            <Alert alert={beritaAlert} />
+                            <form onSubmit={handleCreateBerita} className="space-y-4">
+                                <div>
+                                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">Judul</label>
+                                    <input className={inputClass} value={judul} onChange={(e) => setJudul(e.target.value)} placeholder="Judul berita" />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">Kategori</label>
+                                    <select className={inputClass} value={kategoriId} onChange={(e) => setKategoriId(e.target.value)}>
+                                        <option value="">Pilih kategori</option>
+                                        {kategori.map((k) => <option key={k.id} value={k.id}>{k.nama}</option>)}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">Ringkasan</label>
+                                    <input className={inputClass} value={ringkasan} onChange={(e) => setRingkasan(e.target.value)} placeholder="Ringkasan singkat (opsional)" />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">URL Thumbnail</label>
+                                    <input className={inputClass} value={thumbnail} onChange={(e) => setThumbnail(e.target.value)} placeholder="https://... (opsional)" />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">Isi Berita</label>
+                                    <textarea className={inputClass} value={isi} onChange={(e) => setIsi(e.target.value)} rows={8} placeholder="Tulis isi berita di sini..." />
+                                </div>
+                                <button
+                                    type="submit"
+                                    disabled={beritaSubmitting}
+                                    className="w-full py-2.5 text-sm font-semibold bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg transition-colors disabled:opacity-60"
+                                >
+                                    {beritaSubmitting ? "Mempublikasikan..." : "Publikasikan Berita"}
+                                </button>
+                            </form>
+                        </section>
+
+                        {/* Daftar berita */}
+                        <section className="bg-white border border-gray-200 rounded-lg p-6">
+                            <h2 className="text-base font-bold text-gray-900 mb-5">Daftar Berita</h2>
+                            {loadingList ? (
+                                <SkeletonList />
+                            ) : berita.length === 0 ? (
+                                <p className="text-sm text-gray-400">Belum ada berita.</p>
+                            ) : (
+                                <ul className="space-y-2.5 max-h-140 overflow-y-auto pr-1">
+                                    {berita.map((b) => (
+                                        <li
+                                            key={b.id}
+                                            className="flex items-center justify-between gap-3 px-4 py-3 border border-gray-100 rounded-lg hover:border-gray-200 transition-colors"
+                                        >
+                                            <div className="min-w-0">
+                                                <p className="text-sm font-semibold text-gray-900 truncate">{b.judul}</p>
+                                                <p className="text-xs text-gray-400 mt-0.5">{b.kategori?.nama} · oleh {b.user?.nama}</p>
+                                            </div>
+                                            <div className="flex gap-2 shrink-0">
+                                                <button
+                                                    onClick={() => setEditTarget(b)}
+                                                    className="px-3 py-1.5 text-xs font-semibold border border-emerald-200 text-emerald-700 rounded-lg hover:bg-emerald-50 transition-colors"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteBerita(b.id)}
+                                                    className="px-3 py-1.5 text-xs font-semibold border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+                                                >
+                                                    Hapus
+                                                </button>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </section>
+                    </div>
+                )}
+
+                {/* ── TAB KATEGORI ── */}
+                {tab === "kategori" && (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                        {/* Form create */}
+                        <section className="bg-white border border-gray-200 rounded-xl p-6">
+                            <h2 className="text-base font-bold text-gray-900 mb-5">Tambah Kategori</h2>
+                            <Alert alert={kategoriAlert} />
+                            <form onSubmit={handleCreateKategori} className="space-y-4">
+                                <div>
+                                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">Nama Kategori</label>
+                                    <input className={inputClass} value={namaKategori} onChange={(e) => setNamaKategori(e.target.value)} placeholder="Misal: Prestasi, Pengumuman" />
+                                </div>
+                                <button
+                                    type="submit"
+                                    disabled={kategoriSubmitting}
+                                    className="w-full py-2.5 text-sm font-semibold bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg transition-colors disabled:opacity-60"
+                                >
+                                    {kategoriSubmitting ? "Menyimpan..." : "Tambah Kategori"}
+                                </button>
+                            </form>
+                        </section>
+
+                        {/* Daftar kategori */}
+                        <section className="bg-white border border-gray-200 rounded-xl p-6">
+                            <h2 className="text-base font-bold text-gray-900 mb-5">Daftar Kategori</h2>
+                            {loadingList ? (
+                                <SkeletonList />
+                            ) : kategori.length === 0 ? (
+                                <p className="text-sm text-gray-400">Belum ada kategori.</p>
+                            ) : (
+                                <ul className="space-y-2.5 max-h-[400px] overflow-y-auto pr-1">
+                                    {kategori.map((k) => (
+                                        <li
+                                            key={k.id}
+                                            className="flex items-center justify-between gap-3 px-4 py-3 border border-gray-100 rounded-lg hover:border-gray-200 transition-colors"
+                                        >
+                                            <div className="min-w-0">
+                                                <p className="text-sm font-semibold text-gray-900 truncate">{k.nama}</p>
+                                                <p className="text-xs text-gray-400 mt-0.5">/{k.slug}</p>
+                                            </div>
+                                            <button
+                                                onClick={() => handleDeleteKategori(k.id)}
+                                                className="px-3 py-1.5 text-xs font-semibold border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors shrink-0"
+                                            >
+                                                Hapus
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </section>
+                    </div>
+                )}
             </main>
         </div>
     );
