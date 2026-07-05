@@ -9,6 +9,9 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/Register';
 import BeritaDetail from './pages/DetailBerita';
 import BeritaList from './pages/AllBerita';
+import SambutanKepalaSekolah from './pages/KepalaSekolah';
+import StrukturOrganisasi from './pages/StrukturOrganisasi';  
+import DewanGurudankaryawan from './pages/DewanGUru';
 
 // Konfigurasi routing
 const router = createBrowserRouter([
@@ -23,6 +26,10 @@ const router = createBrowserRouter([
       {
         path: 'profil',
         element: <Profil />,
+      },
+      {
+        path: 'SambutanKepalaSekolah',
+        element: <SambutanKepalaSekolah />,
       },
       {
         path: 'Akademik',
@@ -48,6 +55,14 @@ const router = createBrowserRouter([
       {
         path: 'AllBerita',
         element: <BeritaList />
+      },
+      {
+        path: 'StrukturOrganisasi',
+        element: <StrukturOrganisasi />
+      },
+      {
+        path: 'DewanGurudankaryawan',
+        element: <DewanGurudankaryawan />
       },
       {
         path: 'AdminBeritaPage',

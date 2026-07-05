@@ -71,30 +71,29 @@ const Home = () => {
         <div className="w-full font-sans text-gray-800">
 
             {/* HERO SECTION */}
-            <section className="relative h-[88vh] flex items-center bg-emerald-950 overflow-hidden">
+            <section className="relative h-[78vh] flex items-center bg-emerald-950 overflow-hidden">
                 <div
-                    className="absolute inset-0 z-0 bg-cover bg-center scale-105"
-                    style={{ backgroundImage: "url('https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?q=80&w=2069&auto=format&fit=crop')" }}
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
+                    style={{ backgroundImage: "url('src/assets/header1.png')" }}
                 ></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-950/80 to-emerald-950/40 z-10"></div>
+                <div className="absolute inset-0 bg-linear-to-t from-emerald-950 via-emerald-950/80 to-emerald-950/40 z-10"></div>
 
                 <div className="relative z-20 px-8 md:px-20 max-w-4xl text-white">
-                    <span className="bg-white/10 backdrop-blur-sm border border-white/20 text-emerald-50 font-semibold px-4 py-1.5 text-xs tracking-widest rounded-full mb-7 inline-block">
-                        TERAKREDITASI A
-                    </span>
+                    
                     <h1 className="text-5xl md:text-6xl font-bold leading-[1.1] mb-6 tracking-tight">
                         Membangun Generasi<br />Amanah &amp; Berprestasi
                     </h1>
+                    
                     <p className="mb-10 text-emerald-100/90 text-lg md:text-xl max-w-2xl leading-relaxed font-light">
                         Selamat datang di MTsN Kota Tegal. Kami berkomitmen menyelenggarakan pendidikan Islam yang berkualitas, modern, dan berwawasan global.
                     </p>
-                    <div className="flex flex-col sm:flex-row gap-4">
+                    
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center">
                         <button className="bg-emerald-500 hover:bg-emerald-400 text-emerald-950 px-8 py-3.5 rounded-full text-sm font-semibold transition-all hover:shadow-lg hover:shadow-emerald-500/20">
-                            Jelajahi Profil
-                        </button>
-                        <button className="border border-white/30 hover:border-white/60 hover:bg-white/5 px-8 py-3.5 rounded-full text-sm font-semibold transition-colors">
-                            Lihat Fasilitas
-                        </button>
+                            Daftar Sekarang
+                        <Link to="https://docs.google.com/forms/d/e/1FAIpQLSca4d7YFeugR0_YkOEORy0EP86jstJy5O5fpv94s_fyxVQRmg/viewform" className="absolute inset-0"></Link>
+                    </button>
+                    
                     </div>
                 </div>
             </section>
@@ -105,9 +104,9 @@ const Home = () => {
 
                     <div className="lg:col-span-2 p-10 md:p-14 flex flex-col md:flex-row gap-8 items-start">
                         <img
-                            src="https://via.placeholder.com/150x200"
+                            src="src/assets/1_Dra.Hj.Siti Fasikha, MM (1) copy.jpg"
                             alt="Kepala Madrasah"
-                            className="w-32 md:w-36 object-cover rounded-xl shadow-md shrink-0"
+                            className="w-36 md:w-36 object-cover rounded-xl shadow-md shrink-0"
                         />
                         <div>
                             <h2 className="text-2xl font-bold text-emerald-900 mb-4 tracking-tight">Sambutan Kepala Madrasah</h2>
@@ -115,7 +114,7 @@ const Home = () => {
                                 "Assalamu'alaikum Warahmatullahi Wabarakatuh. Puji syukur kita panjatkan kehadirat Allah SWT. Di era digital ini, MTsN Kota Tegal terus berinovasi untuk mencetak lulusan yang tidak hanya cerdas secara akademik, namun juga memiliki akhlakul karimah yang kokoh."
                             </p>
                             <div>
-                                <p className="font-bold text-gray-900">Drs. H. Miftahuddin, M.Ag.</p>
+                                <p className="font-bold text-gray-900">Dra. Hj. Siti Fasikha, MM</p>
                                 <p className="text-sm text-gray-400">Kepala MTsN Kota Tegal</p>
                             </div>
                         </div>
@@ -139,7 +138,7 @@ const Home = () => {
                         <div className="flex items-center gap-5">
                             <div className="p-3 bg-white/10 rounded-xl text-xl">🏆</div>
                             <div>
-                                <h3 className="text-3xl font-bold tracking-tight">150+</h3>
+                                <h3 className="text-3xl font-bold tracking-tight">100+</h3>
                                 <p className="text-emerald-200/80 text-sm">Prestasi Tahunan</p>
                             </div>
                         </div>
@@ -296,17 +295,7 @@ const Home = () => {
             </section>
 
             {/* CALL TO ACTION SECTION */}
-            <section className="bg-emerald-950 text-white text-center py-24 px-8 border-t border-emerald-900">
-                <div className="max-w-3xl mx-auto">
-                    <h2 className="text-4xl font-bold mb-6 tracking-tight">Siap Menjadi Bagian Dari Kami?</h2>
-                    <p className="text-emerald-100/80 text-lg mb-10 font-light">
-                        Pendaftaran Peserta Didik Baru (PPDB) Tahun Ajaran 2024/2025 telah dibuka. Segera amankan kursi Anda.
-                    </p>
-                    <button className="bg-emerald-500 hover:bg-emerald-400 text-emerald-950 px-9 py-3.5 rounded-full text-sm font-semibold transition-all hover:shadow-lg hover:shadow-emerald-500/20">
-                        Daftar Sekarang
-                    </button>
-                </div>
-            </section>
+        
 
         </div>
     );

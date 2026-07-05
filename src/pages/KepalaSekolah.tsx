@@ -40,7 +40,7 @@ function stripHtmlTags(str: string) {
 }
 
 // --- Komponen Utama ---
-const Profil: React.FC = () => {
+const SambutanKepalaSekolah: React.FC = () => {
     // State untuk Berita
     const [berita, setBerita] = useState<Berita[]>([]);
     const [loadingBerita, setLoadingBerita] = useState(true);
@@ -53,7 +53,7 @@ const Profil: React.FC = () => {
                 const res = await api.get('/berita');
                 const allBerita: Berita[] = res.data?.data ?? [];
                 const published = allBerita.filter((item) => item.published);
-
+                
                 // Opsional: Urutkan dari yang terbaru
                 // published.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
@@ -78,11 +78,11 @@ const Profil: React.FC = () => {
         <div className="min-h-screen bg-[#f4f5f7] font-sans pb-12">
 
             {/* Navigasi Placeholder (Menyesuaikan dengan layout global web Anda) */}
-
+            
 
             <div className="max-w-7xl mx-auto px-4">
                 <h1 className="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-gray-300 pb-2 py-10">
-                    Profil Madrasah
+                    Sambutan Kepala Sekolah
                 </h1>
             </div>
 
@@ -91,92 +91,34 @@ const Profil: React.FC = () => {
 
                 {/* Kolom Kiri: Teks Sambutan */}
                 <section className="lg:col-span-2 bg-white p-8 shadow-sm border border-gray-200">
-
+                    
                     {/* Foto Kepala Sekolah */}
-                    <div className="flex justify-center mb-8 ">
+                    <div className="flex justify-center mb-8">
                         <div className="p-2 border border-gray-200 bg-gray-50 rounded shadow-sm inline-block">
-                            <img
-                                src="/src/assets/man.jpg"
-                                alt="Kepala Sekolah"
-                                className="w-150 h-auto object-cover rounded"
-                            />
+                            <img src="/src/assets/1_Dra.Hj.siti Fasikha, MM (1) copy.jpg" alt="Kepala Sekolah" className="w-48 h-60 object-cover rounded" />
                         </div>
                     </div>
 
                     {/* Isi Sambutan */}
-                    
-                        <div className="space-y-10 text-sm text-gray-700 leading-relaxed text-justify px-0 lg:px-8">
-                            <p>
-                                Sebuah institusi besar tidak pernah lahir dalam semalam. Ada peluh, dedikasi, dan sinergi dari banyak pihak di balik kokohnya bangunan Madrasah Aliyah Negeri (MAN) Kota Tegal hari ini. Inilah kisah perjalanan kami—sebuah bukti nyata bahwa keterbatasan bukanlah penghalang untuk mencetak generasi gemilang.
-                            </p>
-                            <p>
-                                Kisah kami bermula pada tahun 1984. Diprakarsai oleh Yayasan Assalafiyah, madrasah ini awalnya hanyalah sebuah kelas jauh (filial) dari MAN Babakan. Di bawah arahan Kepala Madrasah pertama, Mu’min Mahmud, langkah kecil ini dimulai.
+                    <div className="space-y-5 text-sm text-gray-700 leading-relaxed text-justify">
+                        <p className="text-center font-bold mb-8">Assalamu'alaikum Warahmatullahi Wabarakatuh</p>
+                        
+                        <p>Puji syukur kita panjatkan ke hadirat Allah SWT atas segala rahmat, hidayah, dan karunia-Nya, sehingga Madrasah Aliyah Negeri (MAN) Kota Tegal dapat terus berdiri tegak, berkembang, dan konsisten memberikan pelayanan pendidikan terbaik bagi peserta didik serta masyarakat luas.</p>
+                        
+                        <p>Selamat datang di Website Resmi MAN Kota Tegal, wadah informasi dan komunikasi untuk seluruh civitas akademika, alumni, dan masyarakat luas yang ingin mengetahui lebih dekat mengenai profil, program, dan prestasi Madrasah kami.</p>
+                        
+                        <p>Sebagai lembaga pendidikan Islam, amanah sejarah tersebut kini kami jawab dengan komitmen penuh dalam menghadapi tantangan masa depan, pesatnya ilmu pengetahuan, teknologi, serta derasnya arus globalisasi. Kami senantiasa berupaya menghadirkan proses pembelajaran berkualitas yang mengintegrasikan kecerdasan intelektual, literasi digital, dan penguatan karakter religius demi mewujudkan visi besar kami: Menjadi Madrasah Berakhlak Mulia.</p>
 
-                                Meski hanya menempati gedung MTs Assalafiyah dengan Kegiatan Belajar Mengajar (KBM) yang dilangsungkan pada sore hingga malam hari, semangat belajar tak pernah padam. Angkatan pertama kami sukses menarik ±160 siswa yang terbagi dalam empat rombongan belajar.
-                            </p>
-                            <p>Seiring turunnya SK Pusat pada 5 Agustus 1986, madrasah yang saat itu dipimpin oleh Mustadjab mulai menunjukkan taringnya. Kami dipercaya menyelenggarakan Ujian Akhir (EBTAN) perdana pada tahun ajaran 1986/1987 untuk 143 siswa.
+                        <p>Semoga MAN Kota Tegal senantiasa menjadi madrasah yang unggul, berdaya saing, dan tetap menjadi prioritas utama masyarakat dalam melahirkan generasi pemimpin masa depan yang berakhlak mulia serta siap berkarya bagi kemajuan bangsa, negara, dan agama.</p>
 
-                                Fase ini adalah fase perjuangan. Demi mendapatkan waktu belajar yang lebih optimal di pagi hari, madrasah ini sempat beberapa kali berpindah lokasi—mulai dari MDA Kemeduran, Jalan Arum Randugunting, hingga MTs Al Munawar. Namun, semangat civitas akademika tidak pernah surut sedikit pun.</p>
-                            <p>Kerja keras bertahun-tahun akhirnya berbuah manis. Di era kepemimpinan Mohammad Cholid yang kemudian dilanjutkan oleh M. Sanuddin, angin segar itu datang. Tepat pada 25 November 1995, SK Penegerian resmi turun.
-
-                                Momen bersejarah ini diproklamirkan dengan penuh kebanggaan di Pendopo Balai Kota Tegal pada 7 Maret 1996. Peresmian ini menjadi simbol kolaborasi yang harmonis antara Wali Kota Tegal saat itu, M. Zakir, dan Kepala Kandepag, Mulyono.</p>
-                            <p>Langkah MAN Kota Tegal semakin tegak berkat kemuliaan hati Bapak Ismail (pensiunan pegawai Kandepag) dan sang istri, Ibu Rukoyah (pemilik PO. Dewi Sri), yang mewakafkan sebidang tanah. Di bawah kepemimpinan Chudlori Affandi, pembangunan tahap awal di Pesurungan Lor pun terealisasi.
-
-                                Hadirnya gedung baru menjadi magnet luar biasa. Animo masyarakat melonjak tajam hingga nyaris sepuluh kali lipat dari jumlah siswa sebelumnya. Saking banyaknya pendaftar, KBM bahkan sempat harus dibagi di dua lokasi yang berbeda.
-                            </p>
-                            <p>Keterbatasan sarana tak membuat kami diam menunggu. Melalui inisiatif luar biasa dari Kamaluddin dan sistem imbal swadaya, kami berhasil membangun tambahan ruang kelas secara mandiri. Perjuangan gigih ini akhirnya menarik perhatian penuh dari Kanwil Departemen Agama Provinsi Jawa Tengah.
-
-                                Tepat pada tahun ajaran 2001/2002, seluruh aktivitas MAN Kota Tegal resmi menyatu di gedung baru Pesurungan Lor. Perkembangan tidak berhenti di situ. Pada 11 Agustus 2003, berkat usulan Kepala Madrasah Mubasyir Dahlan dan dukungan Wali Kota Adi Winarso, madrasah mendapatkan hak pakai tanah seluas 4.600 m² untuk terus memperluas fasilitas.
-                            </p>
-                            <p>Kini, MAN Kota Tegal bukan lagi sekadar "kelas jauh" yang belajar di sore hari. Kami berdiri tegak sebagai institusi pendidikan kebanggaan masyarakat yang terus didukung oleh pemerintah dan Depag, siap mencetak generasi pemimpin masa depan yang berakhlak mulia dan berwawasan luas.</p>
-                        </div>
-
-
-                    <hr className="my-8 border-gray-200" />
-
-                    {/* Bagian Visi & Misi */}
-                    <div className="space-y-6">
-                        <div className="text-center bg-green-50 p-6 rounded-xl border border-green-100">
-                            <h2 className="text-2xl font-bold text-green-800 mb-3">VISI</h2>
-                            <p className="text-lg font-semibold text-gray-700 italic">
-                                "Menjadi Madrasah Berakhlak Mulia"
-                            </p>
-                        </div>
-
-                        <div>
-                            <h2 className="text-xl font-bold text-green-800 mb-4 text-center lg:text-left">MISI MADRASAH</h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {/* Misi 1 */}
-                                <div className="p-4 bg-white border border-gray-100 rounded-lg shadow-2xs hover:shadow-md transition-shadow">
-                                    <h3 className="font-bold text-green-700 mb-1">1. Islam</h3>
-                                    <p className="text-sm text-gray-600">Mewujudkan warga madrasah yang berkepribadian Islami.</p>
-                                </div>
-                                {/* Misi 2 */}
-                                <div className="p-4 bg-white border border-gray-100 rounded-lg shadow-2xs hover:shadow-md transition-shadow">
-                                    <h3 className="font-bold text-green-700 mb-1">2. Kreatif</h3>
-                                    <p className="text-sm text-gray-600">Mewujudkan warga madrasah yang kreatif, inovatif, dan aplikatif dalam penguasaan ilmu pengetahuan dan teknologi.</p>
-                                </div>
-                                {/* Misi 3 */}
-                                <div className="p-4 bg-white border border-gray-100 rounded-lg shadow-2xs hover:shadow-md transition-shadow">
-                                    <h3 className="font-bold text-green-700 mb-1">3. Hidupkan Potensi</h3>
-                                    <p className="text-sm text-gray-600">Menghidupkan seluruh potensi warga madrasah untuk meraih prestasi terbaik di bidang akademik dan atau non-akademik ke tingkat nasional.</p>
-                                </div>
-                                {/* Misi 4 */}
-                                <div className="p-4 bg-white border border-gray-100 rounded-lg shadow-2xs hover:shadow-md transition-shadow">
-                                    <h3 className="font-bold text-green-700 mb-1">4. Lintas Instansi</h3>
-                                    <p className="text-sm text-gray-600">Membangun sinergi antar instansi untuk kemajuan madrasah.</p>
-                                </div>
-                                {/* Misi 5 */}
-                                <div className="p-4 bg-white border border-gray-100 rounded-lg shadow-2xs hover:shadow-md transition-shadow">
-                                    <h3 className="font-bold text-green-700 mb-1">5. Akuntabel</h3>
-                                    <p className="text-sm text-gray-600">Akuntabel dalam pelayanan pendidikan terhadap warga madrasah dan masyarakat yang terwujud dalam sistem informasi yang mudah diakses.</p>
-                                </div>
-                                {/* Misi 6 */}
-                                <div className="p-4 bg-white border border-gray-100 rounded-lg shadow-2xs hover:shadow-md transition-shadow">
-                                    <h3 className="font-bold text-green-700 mb-1">6. Prioritas</h3>
-                                    <p className="text-sm text-gray-600">Mewujudkan madrasah yang dapat menjadi prioritas utama masyarakat.</p>
-                                </div>
-                            </div>
+                        <p>Akhir kata, semoga website ini dapat memberikan manfaat optimal sebagai media informasi dan publikasi positif bagi MAN Kota Tegal. Mari terus berkarya, berinovasi, dan berprestasi.</p>
+                        
+                        <div className="text-center pt-8 pb-4">
+                            <p className="font-bold mb-6">Wassalamu'alaikum Warahmatullahi Wabarakatuh</p>
+                            <p>Kepala Madrasah,</p>
+                            <br /><br />
+                            <p className="font-bold underline mt-8">Dra. Hj. Siti Fasikha, MM</p>
+                            <p>NIP. 196704181993032002</p>
                         </div>
                     </div>
                 </section>
@@ -188,9 +130,9 @@ const Profil: React.FC = () => {
                     <div className="bg-white border border-gray-200 shadow-sm p-4">
                         <div className="flex text-sm border-b border-gray-200 mb-4">
                             <button className="px-3 py-2 font-bold border-b-2 border-teal-600 text-teal-700">Latest</button>
-                            
+                        
                         </div>
-
+                        
                         <ul className="space-y-4">
                             {loadingBerita ? (
                                 <p className="text-sm text-gray-500 text-center py-4 animate-pulse">Memuat artikel...</p>
@@ -199,9 +141,9 @@ const Profil: React.FC = () => {
                                     <li key={item.id} className="flex gap-3 items-center group">
                                         <Link to={`/berita/${item.slug}`} className="shrink-0">
                                             <div className="w-16 h-16 bg-gray-100 rounded overflow-hidden">
-                                                <img
-                                                    src={item.thumbnail || fallbackImage(item.id)}
-                                                    alt={item.judul}
+                                                <img 
+                                                    src={item.thumbnail || fallbackImage(item.id)} 
+                                                    alt={item.judul} 
                                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                                                 />
                                             </div>
@@ -234,12 +176,12 @@ const Profil: React.FC = () => {
                                 <div className="w-full h-32 bg-gray-200 animate-pulse rounded" />
                             ) : slideArtikel ? (
                                 <Link to={`/berita/${slideArtikel.slug}`} className="block group">
-                                    <div
+                                    <div 
                                         className="w-full h-32 bg-gray-300 flex items-end p-3 relative overflow-hidden bg-cover bg-center rounded"
                                         style={{ backgroundImage: `url(${slideArtikel.thumbnail || fallbackImage(slideArtikel.id)})` }}
                                     >
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover:from-black/90 transition-all"></div>
-
+                                        
                                         <div className="relative z-10 text-white">
                                             <h3 className="font-bold text-sm leading-tight line-clamp-2 group-hover:text-teal-300 transition-colors">
                                                 {slideArtikel.judul}
@@ -265,9 +207,9 @@ const Profil: React.FC = () => {
                             ) : artikelUnggulan ? (
                                 <Link to={`/berita/${artikelUnggulan.slug}`} className="flex gap-3 items-center group">
                                     <div className="w-20 h-20 bg-gray-100 rounded overflow-hidden shrink-0">
-                                        <img
-                                            src={artikelUnggulan.thumbnail || fallbackImage(artikelUnggulan.id)}
-                                            alt={artikelUnggulan.judul}
+                                        <img 
+                                            src={artikelUnggulan.thumbnail || fallbackImage(artikelUnggulan.id)} 
+                                            alt={artikelUnggulan.judul} 
                                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                                         />
                                     </div>
@@ -305,9 +247,9 @@ const Profil: React.FC = () => {
                     ) : janganLewatkan.length > 0 ? (
                         janganLewatkan.map((item) => (
                             <Link to={`/berita/${item.slug}`} key={item.id} className="group relative rounded-md overflow-hidden h-48 block shadow-sm border border-gray-200">
-                                <img
-                                    src={item.thumbnail || fallbackImage(item.id)}
-                                    alt={item.judul}
+                                <img 
+                                    src={item.thumbnail || fallbackImage(item.id)} 
+                                    alt={item.judul} 
                                     className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
@@ -337,4 +279,4 @@ const Profil: React.FC = () => {
     );
 };
 
-export default Profil;
+export default SambutanKepalaSekolah;

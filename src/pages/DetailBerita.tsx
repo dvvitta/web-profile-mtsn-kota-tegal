@@ -176,7 +176,11 @@ const BeritaDetail = () => {
                     </Link>
                 </div>
             </div>
+            
+            
         </article>
+        
+        
     );
 };
 

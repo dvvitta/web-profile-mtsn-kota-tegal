@@ -1,157 +1,237 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import api from '../lib/api'; // Pastikan path ini sesuai dengan struktur folder Anda
 
-const HubungiKami = () => {
+// --- Tipe Data ---
+interface ContactDetail {
+    label: string;
+    value: string | React.ReactNode;
+}
+
+interface Kategori {
+    id: number;
+    nama: string;
+    slug: string;
+}
+
+interface Berita {
+    id: number;
+    judul: string;
+    slug: string;
+    ringkasan: string | null;
+    thumbnail: string | null;
+    isi: string;
+    published: boolean;
+    createdAt: string;
+    kategori: Kategori;
+}
+
+// --- Fungsi Utilitas ---
+function formatTanggal(dateString: string) {
+    return new Date(dateString).toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+    });
+}
+
+function fallbackImage(id: number) {
+    return `https://picsum.photos/400/300?random=${id}`;
+}
+
+// --- Komponen Baris Tabel ---
+const TableRow: React.FC<{ data: ContactDetail }> = ({ data }) => (
+    <tr className="border-b border-gray-200">
+        <td className="py-2 px-4 w-1/3 text-sm text-gray-700 bg-white border-r border-gray-200">
+            {data.label}
+        </td>
+        <td className="py-2 px-4 text-sm text-gray-700 bg-white">
+            : {data.value}
+        </td>
+    </tr>
+);
+
+// --- Komponen Utama ---
+const HubungiKami: React.FC = () => {
+    // State untuk Berita
+    const [berita, setBerita] = useState<Berita[]>([]);
+    const [loadingBerita, setLoadingBerita] = useState(true);
+
+    // Fetch API (Sama seperti di halaman Home)
+    useEffect(() => {
+        const fetchBerita = async () => {
+            try {
+                setLoadingBerita(true);
+                const res = await api.get('/berita');
+                const allBerita: Berita[] = res.data?.data ?? [];
+                const published = allBerita.filter((item) => item.published);
+
+                // Urutkan berdasarkan tanggal terbaru jika dari API belum terurut (Opsional)
+                // published.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+                setBerita(published);
+            } catch (error) {
+                console.error("Gagal memuat berita:", error);
+            } finally {
+                setLoadingBerita(false);
+            }
+        };
+
+        fetchBerita();
+    }, []);
+
+    // Membagi data berita untuk desain sidebar
+    const slideArtikel = berita[0]; // 1 Artikel terbaru untuk Slide
+    const latestArtikel = berita.slice(1, 4); // 3 Artikel berikutnya untuk List
+
+    // Data Statis Kontak
+    const contactData: ContactDetail[] = [
+        { label: 'Nama', value: ' MTs Negeri Kota Tegal' },
+        { label: 'NPSN', value: <span className="text-teal-600 font-medium">20364865</span> },
+        { label: 'Alamat', value: 'JL. PENDIDIKAN' },
+        { label: 'Desa/Kelurahan', value: 'PESURUNGANLOR' },
+        { label: 'Kecamatan/Kota (LN)', value: 'KEC. MARGADANA' },
+        { label: 'Kab.-Kota/Negara (LN)', value: 'KOTA TEGAL' },
+        { label: 'Propinsi/Luar Negeri (LN)', value: 'PROV. JAWA TENGAH' },
+        { label: 'Status Madrasah', value: 'NEGERI' },
+        { label: 'Status Akreditasi', value: 'A' },
+        { label: 'Skor Akreditasi', value: '97' },
+        { label: 'Tahun Berdiri', value: '19 JULI 1993' },
+        { label: 'Fax/Telepon', value: '(0283) 325352' },
+        { label: 'Email', value: 'mts_margadana@yahoo.co.id' },
+        {
+            label: 'Website',
+            value: <a href="http://www.mankotategal.sch.id" className="text-teal-600 hover:underline" target="_blank" rel="noopener noreferrer">http://www.mankotategal.sch.id</a>
+        },
+    ];
+
     return (
-        <div className="w-full font-sans text-gray-800 bg-[#f8f9fa] min-h-screen pb-20">
+        <div className="min-h-screen bg-white font-sans">
 
-            {/* ========================================= */}
-            {/* HEADER SECTION                            */}
-            {/* ========================================= */}
-            <section className="pt-20 pb-16 px-6 max-w-3xl mx-auto text-center">
-                <h1 className="text-3xl md:text-4xl font-bold text-[#0b5c3e] mb-4">
-                    Hubungi Kami
+            {/* Navigasi Placeholder */}
+            <div className="max-w-7xl mx-auto px-4">
+                <h1 className="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-gray-300 pb-2 py-10">
+                    Kontak Kami
                 </h1>
-                <p className="text-gray-500 text-sm md:text-base leading-relaxed">
-                    Jalin komunikasi bersama kami melalui saluran resmi sekolah untuk informasi pendaftaran dan administrasi masa depan putra-putri Anda.
-                </p>
-            </section>
+            </div>
 
-            {/* ========================================= */}
-            {/* KONTAK & FORMULIR (2 Kolom)               */}
-            {/* ========================================= */}
-            <section className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+            {/* Konten Utama */}
+            <main className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                {/* --- KOLOM KIRI: INFO KONTAK & MAPS --- */}
-                <div className="flex flex-col">
-                    <h2 className="text-2xl md:text-3xl font-bold text-[#0b5c3e] mb-3">Informasi Kontak</h2>
-                    <p className="text-sm text-gray-500 mb-8 leading-relaxed">
-                        Kunjungi kami atau hubungi melalui saluran komunikasi resmi sekolah untuk informasi lebih lanjut.
-                    </p>
+                {/* Kolom Kiri: Tabel Kontak */}
+                <section className="lg:col-span-2">
+                    <div className="bg-white p-6 shadow-sm border border-gray-200">
+                        <table className="w-full text-left border-collapse border border-gray-200 mb-8">
+                            <tbody>
+                                {contactData.map((item, index) => (
+                                    <TableRow key={index} data={item} />
+                                ))}
 
-                    {/* Kotak-kotak Informasi */}
-                    <div className="space-y-4 mb-8">
+                                {/* Baris Khusus untuk Maps */}
+                                <tr className="border-b border-gray-200">
+                                    <td colSpan={2} className="py-4 px-4 text-sm text-gray-700">
+                                        <p className="mb-2 font-semibold">Maps / Lokasi</p>
+                                        <div className="w-full grow min-h-80 bg-gray-200 rounded-xl overflow-hidden shadow-inner relative">
+                                            {/* Ganti dengan iframe Google Maps asli */}
+                                            <iframe
+                                                /* Pastikan src menggunakan link Embed dari Google Maps yang valid */
+                                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.177657603143!2d109.11210767356464!3d-6.869304067207514!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6fb75e94a7a8e5%3A0x37236192dfabece1!2sMAN%20Kota%20Tegal!5e0!3m2!1sen!2sid!4v1781424346502!5m2!1sen!2sid"
+                                                className="absolute top-0 left-0"
+                                                width="100%"
+                                                height="100%"
+                                                style={{ border: 0 }}
+                                                allowFullScreen
+                                                loading="lazy"
+                                                referrerPolicy="no-referrer-when-downgrade"
+                                            />
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
 
-                        {/* Alamat */}
-                        <div className="flex items-start gap-4 p-5 bg-[#f8fbfa] rounded-xl border border-gray-100/80">
-                            <div className="text-[#0b5c3e] mt-0.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 className="text-sm font-semibold text-[#0b5c3e] mb-1">Alamat Sekolah</h4>
-                                <p className="text-sm text-gray-600 leading-relaxed">Jl. Wisanggeni No. 01, Kel. Kejambon, Kec. Tegal Timur, Kota Tegal, Jawa Tengah 52124</p>
-                            </div>
+                {/* Kolom Kanan: Sidebar dengan Data Dinamis */}
+                <aside className="space-y-6">
+
+                    {/* Widget Tab Artikel */}
+                    <div className="bg-white border border-gray-200 shadow-sm p-4">
+                        <div className="flex text-sm border-b border-gray-200 mb-4">
+                            <button className="px-3 py-2 font-bold border-b-2 border-teal-600 text-teal-700">Latest</button>
+                        
                         </div>
 
-                        {/* Telepon */}
-                        <div className="flex items-start gap-4 p-5 bg-[#f8fbfa] rounded-xl border border-gray-100/80">
-                            <div className="text-[#0b5c3e] mt-0.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.864-1.041l-3.286-.481c-.498-.073-.99.21-1.12.695l-.21 1.111a12.04 12.04 0 01-7.143-7.143l1.112-.21c.484-.13.768-.62.695-1.12l-.48-3.286c-.075-.513-.525-.864-1.04-.864H4.5a2.25 2.25 0 00-2.25 2.25z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 className="text-sm font-semibold text-[#0b5c3e] mb-1">Telepon / WhatsApp</h4>
-                                <p className="text-sm text-gray-600 leading-relaxed">(0283) 351234 / +62 812-3456-7890</p>
-                            </div>
-                        </div>
+                        <ul className="space-y-4">
+                            {loadingBerita ? (
+                                <p className="text-sm text-gray-500 text-center py-4 animate-pulse">Memuat artikel...</p>
+                            ) : latestArtikel.length > 0 ? (
+                                latestArtikel.map((item) => (
+                                    <li key={item.id} className="flex gap-3 items-center group">
+                                        <Link to={`/berita/${item.slug}`} className="shrink-0">
+                                            <div className="w-16 h-16 bg-gray-100 rounded overflow-hidden">
+                                                <img
+                                                    src={item.thumbnail || fallbackImage(item.id)}
+                                                    alt={item.judul}
+                                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                                />
+                                            </div>
+                                        </Link>
+                                        <div>
+                                            <span className="text-[10px] bg-teal-600 text-white px-1.5 py-0.5 rounded uppercase font-medium tracking-wide">
+                                                {item.kategori?.nama || 'UMUM'}
+                                            </span>
+                                            <Link to={`/berita/${item.slug}`}>
+                                                <p className="text-sm font-semibold mt-1.5 leading-tight text-gray-800 group-hover:text-teal-700 transition-colors line-clamp-2">
+                                                    {item.judul}
+                                                </p>
+                                            </Link>
+                                        </div>
+                                    </li>
+                                ))
+                            ) : (
+                                <p className="text-sm text-gray-500 text-center py-4">Belum ada artikel.</p>
+                            )}
+                        </ul>
+                    </div>
 
-                        {/* Email */}
-                        <div className="flex items-start gap-4 p-5 bg-[#f8fbfa] rounded-xl border border-gray-100/80">
-                            <div className="text-[#0b5c3e] mt-0.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 className="text-sm font-semibold text-[#0b5c3e] mb-1">Email Resmi</h4>
-                                <p className="text-sm text-gray-600 leading-relaxed">info@mtsnkotategal.sch.id</p>
-                            </div>
+                    {/* Widget Slide Artikel */}
+                    <div className="bg-white border border-gray-200 shadow-sm">
+                        <div className="bg-teal-700 text-white px-4 py-2 font-bold text-sm">
+                            Slide Artikel
+                        </div>
+                        <div className="p-4">
+                            {loadingBerita ? (
+                                <div className="w-full h-32 bg-gray-200 animate-pulse rounded" />
+                            ) : slideArtikel ? (
+                                <Link to={`/berita/${slideArtikel.slug}`} className="block group">
+                                    <div
+                                        className="w-full h-32 bg-gray-300 flex items-end p-3 relative overflow-hidden bg-cover bg-center"
+                                        style={{ backgroundImage: `url(${slideArtikel.thumbnail || fallbackImage(slideArtikel.id)})` }}
+                                    >
+                                        {/* Overlay gradient agar teks mudah dibaca */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover:from-black/90 transition-all"></div>
+
+                                        <div className="relative z-10 text-white">
+                                            <h3 className="font-bold text-sm leading-tight line-clamp-2 group-hover:text-teal-300 transition-colors">
+                                                {slideArtikel.judul}
+                                            </h3>
+                                            <p className="text-[10px] mt-1.5 text-gray-300">
+                                                {formatTanggal(slideArtikel.createdAt)}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </Link>
+                            ) : (
+                                <div className="w-full h-32 bg-gray-100 flex items-center justify-center">
+                                    <span className="text-xs text-gray-400">Tidak ada sorotan</span>
+                                </div>
+                            )}
                         </div>
                     </div>
 
-                    {/* Maps (Dibuat sejajar dengan bawah form) */}
-                    <div className="w-full grow min-h-80 bg-gray-200 rounded-xl overflow-hidden shadow-inner relative">
-                        <iframe
-                                /* Pastikan src menggunakan link Embed dari Google Maps yang valid */
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.177657603143!2d109.11210767356464!3d-6.869304067207514!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6fb75e94a7a8e5%3A0x37236192dfabece1!2sMAN%20Kota%20Tegal!5e0!3m2!1sen!2sid!4v1781424346502!5m2!1sen!2sid"
-                                className="absolute top-0 left-0"
-                                width="100%"
-                                height="100%"
-                                style={{ border: 0 }}
-                                allowFullScreen
-                                loading="lazy"
-                                referrerPolicy="no-referrer-when-downgrade"
-                            />
-                    </div>
-                </div>
-
-                {/* --- KOLOM KANAN: FORMULIR PESAN --- */}
-                <div>
-                    <div className="bg-white p-8 md:p-10 rounded-2xl shadow-sm border border-gray-200 h-full">
-                        <h3 className="text-xl font-bold text-[#0b5c3e] mb-6">Kirim Pesan</h3>
-
-                        <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
-
-                            {/* Nama Lengkap */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
-                                <input
-                                    type="text"
-                                    placeholder="Masukkan nama lengkap Anda"
-                                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#0b5c3e] focus:border-[#0b5c3e] text-sm text-gray-800 bg-white placeholder-gray-400 transition-colors"
-                                />
-                            </div>
-
-                            {/* Email */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Alamat Email</label>
-                                <input
-                                    type="email"
-                                    placeholder="email@contoh.com"
-                                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#0b5c3e] focus:border-[#0b5c3e] text-sm text-gray-800 bg-white placeholder-gray-400 transition-colors"
-                                />
-                            </div>
-
-                            {/* Subjek / Kategori */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Subjek</label>
-                                <select className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#0b5c3e] focus:border-[#0b5c3e] text-sm text-gray-800 bg-white appearance-none cursor-pointer transition-colors bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_1rem_center] bg-[size:0.65rem_auto]">
-                                    <option>Informasi Pendaftaran (PPDB)</option>
-                                    <option>Informasi Akademik & Kurikulum</option>
-                                    <option>Kerja Sama / Kunjungan</option>
-                                    <option>Lainnya</option>
-                                </select>
-                            </div>
-
-                            {/* Textarea Pesan */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Pesan Anda</label>
-                                <textarea
-                                    rows= {4}
-                                    placeholder="Tuliskan pesan Anda secara detail..."
-                                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#0b5c3e] focus:border-[#0b5c3e] text-sm text-gray-800 bg-white placeholder-gray-400 resize-none transition-colors"
-                                ></textarea>
-                            </div>
-
-                            {/* Tombol Kirim dengan SVG Icon */}
-                            <button
-                                type="submit"
-                                className="w-full bg-[#0b5c3e] hover:bg-[#084a31] text-white font-medium py-3.5 rounded-lg flex justify-center items-center gap-2 transition-all duration-200 mt-4"
-                            >
-                                Kirim Pesan
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 ml-1">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-                                </svg>
-                            </button>
-
-                        </form>
-                    </div>
-                </div>
-
-            </section>
+                </aside>
+            </main>
         </div>
     );
 };
