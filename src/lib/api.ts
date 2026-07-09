@@ -15,7 +15,9 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // 2. Konfigurasi Axios
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
+    // Vercel akan otomatis mengisi VITE_API_URL dari Environment Variables Vercel
+    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
+    withCredentials: true,
 });
 
 // Kirim token di setiap request
