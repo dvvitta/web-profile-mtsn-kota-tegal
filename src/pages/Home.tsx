@@ -35,9 +35,9 @@ function fallbackImage(id: number) {
 
 // 1. Pindahkan daftar gambar ke luar komponen agar tidak dirender ulang
 const backgrounds = [
-    'src/assets/background2.png',
-    'src/assets/background1.png',
-    'src/assets/background3.png',
+    '/background2.png',
+    '/background1.png',
+    '/background3.png',
 ];
 
 const Home = () => {
@@ -168,7 +168,7 @@ const Home = () => {
                     
                     <div className="col-span-1 rounded-2xl overflow-hidden shadow-xl shadow-emerald-900/10 h-[420px]">
                         <img
-                            src="src/assets/1_Dra.Hj.Siti Fasikha, MM.jpg"
+                            src="/1_Dra.Hj.Siti Fasikha, MM.jpg"
                             alt="Kepala Madrasah"
                             className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                         />
@@ -176,14 +176,14 @@ const Home = () => {
                     <div className="col-span-1 flex flex-col gap-4">
                         <div className="rounded-2xl overflow-hidden shadow-lg shadow-gray-200/50 h-[200px]">
                             <img
-                                src="src/assets/background2.png"
+                                src="/background2.png"
                                 alt="Kegiatan Religius Siswa"
                                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                             />
                         </div>
                         <div className="rounded-2xl overflow-hidden shadow-lg shadow-gray-200/50 h-[204px]">
                             <img
-                                src="src/assets/background3.png"
+                                src="/background3.png"
                                 alt="Kelas Interaktif"
                                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                             />

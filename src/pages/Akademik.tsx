@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 
 // 1. Import gambar lokal dari folder assets
-import gedungImg from '../assets/gedung.jpg';
+import gedungImg from '/gedung.jpg';
 // Catatan: Sesuaikan "../assets/gedung.jpg" jika posisi folder komponen ini berbeda tingkat kedalamannya.
 
 const Akademik = () => {

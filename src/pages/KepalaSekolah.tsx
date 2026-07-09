@@ -92,7 +92,7 @@ const SambutanKepalaSekolah: React.FC = () => {
                     {/* Foto Kepala Sekolah */}
                     <div className="flex justify-center mb-8">
                         <div className="p-2 border border-gray-200 bg-gray-50 rounded shadow-sm inline-block">
-                            <img src="/src/assets/1_Dra.Hj.siti Fasikha, MM.jpg" alt="Kepala Sekolah" className="w-48 h-60 object-cover rounded" />
+                            <img src="/1_Dra.Hj.Siti Fasikha, MM.jpg" alt="Kepala Sekolah" className="w-48 h-60 object-cover rounded" />
                         </div>
                     </div>
 

@@ -96,8 +96,8 @@ const Profil: React.FC = () => {
                     <div className="flex justify-center mb-8 ">
                         <div className="p-2 border border-gray-200 bg-gray-50 rounded shadow-sm inline-block">
                             <img
-                                src="/src/assets/background2.png"
-                                alt="Kepala Sekolah"
+                                src="/gedung.jpg"
+                                alt="Sekolah"
                                 className="w-150 h-auto object-cover rounded"
                             />
                         </div>
