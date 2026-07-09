@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Footer = () => {
     return (
         <footer className="bg-green-950 text-white pt-16 pb-8 px-8 md:px-20">
@@ -55,7 +57,13 @@ const Footer = () => {
 
                     {/* --- Copyright Text --- */}
                     <div className="text-center text-sm text-gray-500">
-                        © 2026 MTsN Kota Tegal. All rights reserved.
+                        <Link to="/LoginPage">
+                            MTsN Kota Tegal
+                        </Link> &nbsp;|&nbsp;
+                        © 2026 MTsN Kota Tegal. All rights reserved
+                        <Link to="/LoginPage">
+                        .
+                        </Link>
                     </div>
 
                 </div>

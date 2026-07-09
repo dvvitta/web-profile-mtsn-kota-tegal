@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Outlet, Link, NavLink } from 'react-router-dom';
 import Footer from './Footer';
 import { useUIStore } from '../store/IUStore';
+import logoMadrasah from '../assets/Logo.png';
 
 const Layout = () => {
     // cast to any to avoid 'unknown' store return type issues
@@ -49,7 +50,7 @@ const Layout = () => {
 
                 {/* Logo */}
                 <Link to="/" className="font-bold text-green-800 text-xl tracking-wide hover:opacity-80 transition-opacity">
-                    <img src="src/assets/Logo.png" alt="Logo" className="h-10 w-auto" />
+                    <img src={logoMadrasah} alt="Logo" className="h-10 w-auto" />
                 </Link>
 
                 {/* Desktop Menu (Menggunakan NavLink untuk indikator aktif) */}

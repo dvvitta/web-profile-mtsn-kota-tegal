@@ -114,7 +114,7 @@ const Home = () => {
 
                 {/* Konten Hero */}
                 <div className="relative z-20 px-6 md:px-20 max-w-5xl text-white w-full mx-auto">
-                    <span className="inline-block py-1 px-3 rounded-full bg-emerald-800/50 border border-emerald-500/30 text-emerald-100 text-sm font-medium tracking-widest uppercase mb-6 backdrop-blur-sm">
+                    <span className="inline-block py-1 px-3 rounded-full bg-emerald-800/30 border border-emerald-500/20 text-emerald-100 text-sm font-medium tracking-widest uppercase mb-6 backdrop-blur-sm">
                         Madrasah Tsanawiyah Negeri Kota Tegal
                     </span>
                     <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] mb-6 tracking-tight drop-shadow-lg">
@@ -126,17 +126,7 @@ const Home = () => {
                         Mendedikasikan diri pada pendidikan Islam yang holistik. Memadukan keluhuran akhlak, kedalaman spiritual, dan keunggulan sains demi mencetak kader peradaban masa depan.
                     </p>
                     
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                        <Link 
-                            to="https://docs.google.com/forms/d/e/1FAIpQLSca4d7YFeugR0_YkOEORy0EP86jstJy5O5fpv94s_fyxVQRmg/viewform"
-                            className="group relative inline-flex items-center justify-center px-8 py-3.5 text-base font-bold text-emerald-950 bg-emerald-500 rounded-full overflow-hidden transition-all hover:bg-emerald-400 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)]"
-                        >
-                            <span>Daftar Sekarang</span>
-                            <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                            </svg>
-                        </Link>
-                    </div>
+                    
                 </div>
             </section>
 
