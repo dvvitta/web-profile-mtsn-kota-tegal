@@ -10,17 +10,18 @@ import RegisterPage from './pages/Register';
 import BeritaDetail from './pages/DetailBerita';
 import BeritaList from './pages/AllBerita';
 import SambutanKepalaSekolah from './pages/KepalaSekolah';
-import StrukturOrganisasi from './pages/StrukturOrganisasi';  
-import DewanGurudankaryawan from './pages/DewanGUru';
+import DewanGurudankaryawan from './pages/DewanGuru';
+import PersonDetail from './pages/PersonDetail';
+import GuruManager from './pages/GuruManager'; // Pastikan path ini sesuai dengan lokasi file GuruManager.tsx
 
 // Konfigurasi routing
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout />, // Layout membungkus semua halaman di children
+    element: <Layout />, // Layout HANYA membungkus halaman di dalam children ini
     children: [
       {
-        index: true, // Menandakan ini adalah halaman default ("/")
+        index: true,
         element: <Home />,
       },
       {
@@ -39,15 +40,6 @@ const router = createBrowserRouter([
         path: 'Kontak',
         element: <Kontak />,
       },
-      //halaman baru
-      {
-        path: 'LoginPage',
-        element: <LoginPage />,
-      },
-      {
-        path: 'RegisterPage',
-        element: <RegisterPage />,
-      },
       {
         path: 'berita/:slug',
         element: <BeritaDetail />
@@ -57,24 +49,42 @@ const router = createBrowserRouter([
         element: <BeritaList />
       },
       {
-        path: 'StrukturOrganisasi',
-        element: <StrukturOrganisasi />
+        path: 'guru/:id',
+        element: <PersonDetail jenis="guru" />
+      },
+      {
+        path: 'karyawan/:id',
+        element: <PersonDetail jenis="karyawan" />
       },
       {
         path: 'DewanGurudankaryawan',
         element: <DewanGurudankaryawan />
       },
       {
-        path: 'AdminBeritaPage',
-        element: <AdminBeritaPage />
-      },
-      {
-        path: '/Berita',
+        path: 'Berita',
         element: <BeritaList />
       }
-      // Anda bisa menambahkan route lain di sini...
     ],
   },
+  // ==========================================
+  // HALAMAN TANPA LAYOUT DITULIS DI SINI
+  // ==========================================
+  {
+    path: '/LoginPage', // Tambahkan '/' di awal karena sekarang ada di root level
+    element: <LoginPage />,
+  },
+  {
+    path: '/RegisterPage', // Biasanya Register juga tidak menggunakan Layout utama
+    element: <RegisterPage />,
+  },
+  {
+    path: '/AdminBeritaPage', // Saya asumsikan halaman Admin juga memiliki layout tersendiri nantinya
+    element: <AdminBeritaPage />
+  },
+  {
+    path: '/GuruManager',
+    element: <GuruManager token={''} />
+  }
 ]);
 
 function App() {

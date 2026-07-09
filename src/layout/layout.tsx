@@ -49,7 +49,7 @@ const Layout = () => {
 
                 {/* Logo */}
                 <Link to="/" className="font-bold text-green-800 text-xl tracking-wide hover:opacity-80 transition-opacity">
-                    <img src="src/assets/Logo-MAN.png" alt="Logo" className="h-10 w-auto" />
+                    <img src="src/assets/Logo.png" alt="Logo" className="h-10 w-auto" />
                 </Link>
 
                 {/* Desktop Menu (Menggunakan NavLink untuk indikator aktif) */}
@@ -77,7 +77,6 @@ const Layout = () => {
                             <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-100 rounded-lg shadow-xl py-2 z-50">
                                 <NavLink to="/Profil" onClick={() => setIsAkademikOpen(false)} className="block px-4 py-2 hover:bg-green-50 text-gray-700">PROFIL MADRASAH</NavLink>
                                 <NavLink to="/SambutanKepalaSekolah" onClick={() => setIsAkademikOpen(false)} className="block px-4 py-2 hover:bg-green-50 text-gray-700">KEPALA MADRASAH</NavLink>
-                                <NavLink to="/StrukturOrganisasi" onClick={() => setIsAkademikOpen(false)} className="block px-4 py-2 hover:bg-green-50 text-gray-700">STRUKTUR ORGANISASI</NavLink>
                                 <NavLink to="/DewanGurudankaryawan" onClick={() => setIsAkademikOpen(false)} className="block px-4 py-2 hover:bg-green-50 text-gray-700">DEWAN GURU DAN KARYAWAN</NavLink>
                             </div>
                         )}
@@ -127,7 +126,6 @@ const Layout = () => {
                                     <div className="bg-gray-50 py-2 rounded-lg my-1">
                                         <NavLink to="/Profil" onClick={handleMobileLinkClick} className="block py-2 text-sm text-gray-600">PROFIL MADRASAH</NavLink>
                                         <NavLink to="/SambutanKepalaSekolah" onClick={handleMobileLinkClick} className="block py-2 text-sm text-gray-600">KEPALA MADRASAH</NavLink>
-                                        <NavLink to="/StrukturOrganisasi" onClick={handleMobileLinkClick} className="block py-2 text-sm text-gray-600">STRUKTUR ORGANISASI</NavLink>
                                         <NavLink to="/DewanGurudankaryawan" onClick={handleMobileLinkClick} className="block py-2 text-sm text-gray-600">DEWAN GURU DAN KARYAWAN</NavLink>
                                     </div>
                                 )}

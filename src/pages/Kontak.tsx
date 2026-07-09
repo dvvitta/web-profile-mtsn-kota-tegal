@@ -101,7 +101,7 @@ const HubungiKami: React.FC = () => {
         { label: 'Email', value: 'mts_margadana@yahoo.co.id' },
         {
             label: 'Website',
-            value: <a href="http://www.mankotategal.sch.id" className="text-teal-600 hover:underline" target="_blank" rel="noopener noreferrer">http://www.mankotategal.sch.id</a>
+            value: <a href="http://www.mtsnkotategal.sch.id" className="text-teal-600 hover:underline" target="_blank" rel="noopener noreferrer">http://www.mtsnkotategal.sch.id</a>
         },
     ];
 
@@ -135,7 +135,7 @@ const HubungiKami: React.FC = () => {
                                             {/* Ganti dengan iframe Google Maps asli */}
                                             <iframe
                                                 /* Pastikan src menggunakan link Embed dari Google Maps yang valid */
-                                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.177657603143!2d109.11210767356464!3d-6.869304067207514!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6fb75e94a7a8e5%3A0x37236192dfabece1!2sMAN%20Kota%20Tegal!5e0!3m2!1sen!2sid!4v1781424346502!5m2!1sen!2sid"
+                                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d362.41478090064174!2d109.11352755513828!3d-6.86870755580938!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6fb75ec713c965%3A0xebeabf230ed0e788!2sMTsN%20Margadana!5e0!3m2!1sen!2sid!4v1783499990144!5m2!1sen!2sid"
                                                 className="absolute top-0 left-0"
                                                 width="100%"
                                                 height="100%"

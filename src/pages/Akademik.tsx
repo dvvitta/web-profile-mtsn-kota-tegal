@@ -1,73 +1,125 @@
 import { useEffect, useState } from 'react';
+import {
+    School,
+    Users,
+    BookOpen,
+    Trophy,
+    Music,
+    Cpu,
+    Compass,
+    CheckCircle2,
+    Clock,
+    Layers
+} from 'lucide-react';
 
 const Akademik = () => {
     // 1. State untuk menyimpan ID menu yang sedang aktif
-    const [activeSection, setActiveSection] = useState('kurikulum');
+    const [activeSection, setActiveSection] = useState('fasilitas');
 
-    // 2. Daftar Menu untuk di-mapping (agar kode lebih bersih)
+    // 2. Daftar Menu dengan Lucide Icons
     const menuItems = [
-        { id: 'kurikulum', label: 'Kurikulum', icon: '📖' },
-        { id: 'fasilitas', label: 'Fasilitas', icon: '🏫' },
-        { id: 'ekskul', label: 'Ekstrakurikuler', icon: '👥' },
-        { id: 'prestasi', label: 'Prestasi', icon: '🏆' },
-        { id: 'perpustakaan', label: 'Perpustakaan', icon: '📚' },
+        { id: 'fasilitas', label: 'Fasilitas Utama', icon: School },
+        { id: 'ekskul', label: 'Ekstrakurikuler', icon: Users },
+        { id: 'perpustakaan', label: 'Perpustakaan Digital', icon: BookOpen },
     ];
 
-    // 3. Efek untuk mendeteksi elemen mana yang sedang tampil di layar (Scrollspy)
+    // 3. Data Dummy Lengkap
+    const dummyFasilitas = [
+        {
+            id: 1,
+            nama: "Laboratorium Komputer & AI",
+            deskripsi: "Dilengkapi dengan 40 unit komputer spesifikasi tinggi, jaringan internet gigabit, dan perangkat penunjang pembelajaran pemrograman serta kecerdasan buatan.",
+            image: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=600&q=80",
+            tag: "Sains & Teknologi"
+        },
+        {
+            id: 2,
+            nama: "Smart Classroom",
+            deskripsi: "Ruang kelas interaktif yang didukung dengan Interactive Whiteboard (IWB), proyektor laserShort-Throw, ruang ber-AC, dan konfigurasi meja belajar fleksibel.",
+            image: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=600&q=80",
+            tag: "Ruang Kelas"
+        },
+        {
+            id: 3,
+            nama: "Laboratorium IPA Terintegrasi",
+            deskripsi: "Fasilitas praktikum Fisika, Kimia, dan Biologi dengan instrumen mikroskop digital, alat peraga anatomi modern, serta standar keamanan laboratorium yang tinggi.",
+            image: "https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&w=600&q=80",
+            tag: "Sains"
+        }
+    ];
+
+    const dummyEkskul = [
+        { nama: "Sepak Bola & Futsal", icon: Trophy, desc: "Fokus pada pengembangan teknik, taktik, dan kompetisi turnamen antar pelajar." },
+        { nama: "Seni musik & Hadroh", icon: Music, desc: "Wadah kreativitas olah vokal, musik modern, serta pelestarian seni religi islami." },
+        { nama: "Klub Robotik & Coding", icon: Cpu, desc: "Eksplorasi dasar otomasi, perakitan mikrokontroler, dan kompetisi robotika." },
+        { nama: "Pramuka Inti", icon: Compass, desc: "Pembentukan karakter, kepemimpinan, kemandirian, dan kepedulian sosial dasar." }
+    ];
+
+    const dummyPerpustakaan = {
+        totalBuku: "12,450+",
+        pengunjungBulanIni: "1,200+",
+        fitur: [
+            "E-Book Access (Akses baca digital via gawai)",
+            "Ruang Baca Cozy & Quiet Zone",
+            "Sistem Peminjaman Otomatis RFID",
+            "Koleksi Jurnal Ilmiah Terakreditasi"
+        ]
+    };
+
+    // Scrollspy logic
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
-                    // Jika bagian tersebut masuk ke dalam area pandang (viewport)
                     if (entry.isIntersecting) {
                         setActiveSection(entry.target.id);
                     }
                 });
             },
-            // rootMargin mengatur "kapan" deteksi terjadi (di-trigger saat elemen mendekati tengah atas layar)
             { rootMargin: '-20% 0px -60% 0px' }
         );
 
-        // Daftarkan semua elemen yang memiliki ID sesuai menu
         menuItems.forEach((item) => {
             const section = document.getElementById(item.id);
             if (section) observer.observe(section);
         });
 
-        return () => observer.disconnect(); // Bersihkan observer saat komponen ditutup
+        return () => observer.disconnect();
     }, []);
 
     return (
-        <div className="w-full font-sans text-gray-800 bg-white">
+        <div className="w-full font-sans text-slate-800 bg-slate-50/40 antialiased selection:bg-emerald-100 selection:text-emerald-900">
 
             <section className="max-w-7xl mx-auto px-4 md:px-12 py-8 md:py-16 grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 relative">
 
                 {/* ========================================= */}
-                {/* SIDEBAR NAVIGATION (Dengan Active State)  */}
+                {/* SIDEBAR NAVIGATION (Modern Active State) */}
                 {/* ========================================= */}
                 <aside className="md:col-span-3 z-30">
-                    <div className="sticky top-17.5 md:top-28 bg-[#f8fbfa]/95 backdrop-blur-sm md:bg-[#f8fbfa] p-3 md:p-6 rounded-2xl md:border border-gray-100 shadow-sm md:shadow-none -mx-4 px-4 md:mx-0 md:px-6">
+                    <div className="sticky top-20 md:top-28 bg-white/90 backdrop-blur-md md:bg-white p-4 rounded-3xl border border-slate-100 shadow-xl shadow-slate-100/50 md:shadow-none">
 
-                        <div className="hidden md:block mb-6">
-                            <h3 className="text-sm font-bold text-gray-900">Akademik</h3>
-                            <p className="text-xs text-gray-500 mt-1">Informasi Sekolah</p>
+                        <div className="hidden md:block mb-6 pl-2">
+                            <h3 className="text-sm font-extrabold text-slate-900 tracking-wider uppercase">Layanan Akademik</h3>
+                            <p className="text-xs text-slate-400 mt-0.5">Eksplorasi lingkungan sekolah</p>
                         </div>
 
-                        <ul className="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-2 md:pb-0 snap-x hide-scrollbar">
+                        <ul className="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-1 md:pb-0 snap-x hide-scrollbar">
                             {menuItems.map((item) => {
                                 const isActive = activeSection === item.id;
+                                const Icon = item.icon;
 
                                 return (
                                     <li key={item.id} className="snap-start">
                                         <a
                                             href={`#${item.id}`}
-                                            onClick={() => setActiveSection(item.id)} // Set aktif saat diklik manual
-                                            className={`whitespace-nowrap shrink-0 md:w-full text-left px-5 py-2.5 md:px-4 md:py-3 rounded-full md:rounded-xl text-sm font-medium flex items-center gap-2 md:gap-3 transition-all duration-200 active:scale-95 ${isActive
-                                                    ? 'bg-green-800 text-white shadow-sm'
-                                                    : 'text-gray-600 bg-white md:bg-transparent border md:border-none border-gray-200 hover:bg-green-50'
+                                            onClick={() => setActiveSection(item.id)}
+                                            className={`whitespace-nowrap shrink-0 md:w-full text-left px-5 py-3 md:px-4 md:py-3.5 rounded-2xl text-sm font-bold flex items-center gap-3 transition-all duration-200 active:scale-[0.98] ${isActive
+                                                ? 'bg-emerald-800 text-white shadow-lg shadow-emerald-800/20'
+                                                : 'text-slate-600 bg-slate-50 md:bg-transparent border md:border-none border-slate-100 hover:bg-emerald-50 hover:text-emerald-800'
                                                 }`}
                                         >
-                                            <span className="text-base md:text-lg">{item.icon}</span> {item.label}
+                                            <Icon className={`w-4 h-4 md:w-5 md:h-5 ${isActive ? 'text-white' : 'text-slate-400'}`} strokeWidth={2.2} />
+                                            {item.label}
                                         </a>
                                     </li>
                                 );
@@ -77,81 +129,100 @@ const Akademik = () => {
                 </aside>
 
                 {/* ========================================= */}
-                {/* KONTEN UTAMA                               */}
+                {/* KONTEN UTAMA                              */}
                 {/* ========================================= */}
-                <main className="md:col-span-9 flex flex-col space-y-12">
+                <main className="md:col-span-9 flex flex-col space-y-16">
 
-                    {/* --- 1. KURIKULUM --- */}
-                    <div id="kurikulum" className="scroll-mt-32 md:scroll-mt-24 space-y-6">
-                        <div className="relative rounded-2xl overflow-hidden h-[250px] md:h-[300px] flex items-center shadow-sm">
-                            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=2070&auto=format&fit=crop')" }}></div>
-                            <div className="absolute inset-0 bg-gradient-to-r from-green-950/95 md:from-green-950/90 to-green-900/40 z-10"></div>
-                            <div className="relative z-20 p-6 md:p-12 max-w-2xl text-white">
-                                <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4 leading-tight">Kurikulum Merdeka & Islami</h1>
-                                <p className="text-green-50 text-sm md:text-base leading-relaxed line-clamp-3 md:line-clamp-none">
-                                    Mengintegrasikan standar pendidikan nasional dengan nilai-nilai luhur keagamaan untuk mencetak generasi unggul.
-                                </p>
-                            </div>
+                    {/* --- 1. FASILITAS SEKOLAH --- */}
+                    <div id="fasilitas" className="pt-4 md:pt-6 scroll-mt-36 md:scroll-mt-24">
+                        <div className="border-l-4 border-emerald-700 pl-4 mb-8">
+                            <h2 className="text-xl md:text-3xl font-extrabold text-slate-900 tracking-tight mb-1">Fasilitas Sekolah</h2>
+                            <p className="text-xs md:text-sm text-slate-500 font-medium">Infrastruktur dan sarana prasarana penunjang kenyamanan belajar mengajar.</p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
-                            <div className="border border-gray-200 rounded-2xl p-6 md:p-8 bg-white hover:shadow-md transition-shadow">
-                                <div className="w-10 h-10 md:w-12 md:h-12 bg-green-800 text-white flex items-center justify-center rounded-lg mb-4 md:mb-6 shadow-sm"><span className="text-lg md:text-xl">📚</span></div>
-                                <h3 className="font-bold text-lg md:text-xl text-gray-900 mb-2 md:mb-3">Program Akademik</h3>
-                                <p className="text-sm text-gray-600 leading-relaxed">Fokus pada literasi, numerasi, dan sains melalui metode pembelajaran berbasis proyek yang inovatif dan partisipatif.</p>
-                            </div>
-                            <div className="border border-gray-200 rounded-2xl p-6 md:p-8 bg-white hover:shadow-md transition-shadow">
-                                <div className="w-10 h-10 md:w-12 md:h-12 bg-green-800 text-white flex items-center justify-center rounded-lg mb-4 md:mb-6 shadow-sm"><span className="text-lg md:text-xl">🕌</span></div>
-                                <h3 className="font-bold text-lg md:text-xl text-gray-900 mb-2 md:mb-3">Tahfidz & Diniyah</h3>
-                                <p className="text-sm text-gray-600 leading-relaxed">Pengembangan karakter religius melalui program hafalan Al-Qur'an dan pendalaman kitab kuning secara intensif.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* --- 2. FASILITAS SEKOLAH --- */}
-                    <div id="fasilitas" className="pt-4 md:pt-8 scroll-mt-36 md:scroll-mt-24">
-                        <div className="border-l-4 border-green-800 pl-4 mb-6 md:mb-8">
-                            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-1">Fasilitas Sekolah</h2>
-                            <p className="text-xs md:text-sm text-gray-500">Lingkungan belajar modern dengan fasilitas lengkap.</p>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 md:gap-6">
-                            {[1, 2, 3].map((item) => (
-                                <div key={item} className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-shadow">
-                                    <div className="h-36 md:h-40 bg-gray-200"></div>
-                                    <div className="p-4 md:p-5">
-                                        <h4 className="font-bold text-green-800 mb-1 md:mb-2 text-sm md:text-base">Fasilitas {item}</h4>
-                                        <p className="text-xs text-gray-600 leading-relaxed">Deskripsi singkat mengenai fasilitas pendukung ini.</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                            {dummyFasilitas.map((item) => (
+                                <div key={item.id} className="bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:translate-y-[-2px] transition-all duration-300 group">
+                                    <div className="h-44 md:h-48 overflow-hidden bg-slate-100 relative">
+                                        <img
+                                            src={item.image}
+                                            alt={item.nama}
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                        />
+                                        <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-emerald-800 text-[10px] font-extrabold px-2.5 py-1 rounded-xl uppercase tracking-wider border border-white/50">
+                                            {item.tag}
+                                        </span>
+                                    </div>
+                                    <div className="p-5 md:p-6">
+                                        <h4 className="font-extrabold text-slate-900 mb-2 text-base group-hover:text-emerald-800 transition-colors">{item.nama}</h4>
+                                        <p className="text-xs text-slate-500 leading-relaxed font-normal">{item.deskripsi}</p>
                                     </div>
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    {/* --- 3. EKSTRAKURIKULER --- */}
-                    <div id="ekskul" className="bg-[#0b5c3e] rounded-2xl p-6 md:p-10 text-white shadow-lg mt-4 scroll-mt-36 md:scroll-mt-24">
-                        <h2 className="text-xl md:text-2xl font-bold mb-2">Pengembangan Diri</h2>
-                        <p className="text-xs md:text-sm text-green-100 mb-6 md:mb-8 max-w-xl">Eksplorasi minat dan bakat melalui berbagai klub dan organisasi kesiswaan.</p>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                            <div className="bg-white/10 border border-white/20 rounded-xl p-3 md:p-4 text-center"><span className="text-2xl md:text-3xl mb-2">⚽</span><span className="text-xs font-semibold block mt-2">Sepak Bola</span></div>
-                            <div className="bg-white/10 border border-white/20 rounded-xl p-3 md:p-4 text-center"><span className="text-2xl md:text-3xl mb-2">🎵</span><span className="text-xs font-semibold block mt-2">Hadroh</span></div>
-                            <div className="bg-white/10 border border-white/20 rounded-xl p-3 md:p-4 text-center"><span className="text-2xl md:text-3xl mb-2">🤖</span><span className="text-xs font-semibold block mt-2">Robotik</span></div>
-                            <div className="bg-white/10 border border-white/20 rounded-xl p-3 md:p-4 text-center"><span className="text-2xl md:text-3xl mb-2">🎖️</span><span className="text-xs font-semibold block mt-2">Pramuka</span></div>
+                    {/* --- 2. EKSTRAKURIKULER --- */}
+                    <div id="ekskul" className="bg-gradient-to-br from-emerald-950 to-emerald-800 rounded-3xl p-6 md:p-10 text-white shadow-xl shadow-emerald-950/10 scroll-mt-36 md:scroll-mt-24 relative overflow-hidden group">
+                        <div className="absolute right-[-20px] bottom-[-20px] text-white opacity-[0.02] pointer-events-none select-none">
+                            <Users className="w-64 h-64" />
+                        </div>
+
+                        <div className="mb-8">
+                            <h2 className="text-xl md:text-3xl font-extrabold tracking-tight mb-1.5">Pengembangan Bakat & Minat</h2>
+                            <p className="text-xs md:text-sm text-emerald-100/80 font-medium max-w-xl">Mengasah sofskils, kepemimpinan, dan kecerdasan emosional di luar jam belajar formal.</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                            {dummyEkskul.map((ekskul, index) => {
+                                const EkskulIcon = ekskul.icon;
+                                return (
+                                    <div key={index} className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-2xl p-5 hover:bg-white/15 transition-all duration-200">
+                                        <div className="w-10 h-10 bg-emerald-500/20 text-emerald-300 rounded-xl flex items-center justify-center mb-3">
+                                            <EkskulIcon className="w-5 h-5" strokeWidth={2.2} />
+                                        </div>
+                                        <h5 className="text-sm font-bold mb-1">{ekskul.nama}</h5>
+                                        <p className="text-[11px] text-emerald-100/70 leading-relaxed font-normal">{ekskul.desc}</p>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
 
-                    {/* --- 4. PRESTASI (Placeholder) --- */}
-                    <div id="prestasi" className="pt-4 md:pt-8 scroll-mt-36 md:scroll-mt-24 h-64 border-2 border-dashed border-gray-200 rounded-xl flex items-center justify-center">
-                        <div className="text-center">
-                            <span className="text-4xl">🏆</span>
-                            <p className="mt-4 font-bold text-gray-500">Area Konten Prestasi</p>
+                    {/* --- 3. PERPUSTAKAAN (Modern Info Grid) --- */}
+                    <div id="perpustakaan" className="pt-4 md:pt-6 scroll-mt-36 md:scroll-mt-24 mb-20">
+                        <div className="border-l-4 border-emerald-700 pl-4 mb-8">
+                            <h2 className="text-xl md:text-3xl font-extrabold text-slate-900 tracking-tight mb-1">Perpustakaan Central & Digital</h2>
+                            <p className="text-xs md:text-sm text-slate-500 font-medium">Gudang ilmu literatur fisik dan gerbang akses referensi digital berskala internasional.</p>
                         </div>
-                    </div>
 
-                    {/* --- 5. PERPUSTAKAAN (Placeholder) --- */}
-                    <div id="perpustakaan" className="pt-4 md:pt-8 scroll-mt-36 md:scroll-mt-24 h-64 border-2 border-dashed border-gray-200 rounded-xl flex items-center justify-center mb-20">
-                        <div className="text-center">
-                            <span className="text-4xl">📚</span>
-                            <p className="mt-4 font-bold text-gray-500">Area Konten Perpustakaan</p>
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
+                            {/* Counter Informasi Ringkas */}
+                            <div className="md:col-span-4 grid grid-cols-2 md:grid-cols-1 gap-4">
+                                <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-center">
+                                    <div className="text-emerald-700 mb-2"><Layers className="w-5 h-5" /></div>
+                                    <span className="text-2xl md:text-3xl font-black text-slate-900">{dummyPerpustakaan.totalBuku}</span>
+                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">Koleksi Buku</span>
+                                </div>
+                                <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-center">
+                                    <div className="text-emerald-700 mb-2"><Clock className="w-5 h-5" /></div>
+                                    <span className="text-2xl md:text-3xl font-black text-slate-900">{dummyPerpustakaan.pengunjungBulanIni}</span>
+                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">Sirkulasi Bulanan</span>
+                                </div>
+                            </div>
+
+                            {/* Fitur Layanan Perpustakaan */}
+                            <div className="md:col-span-8 bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-center">
+                                <h4 className="text-base font-extrabold text-slate-900 mb-4">Layanan & Keunggulan Ruang Baca</h4>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                                    {dummyPerpustakaan.fitur.map((fitur, i) => (
+                                        <div key={i} className="flex items-start gap-2.5">
+                                            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" strokeWidth={2.5} />
+                                            <span className="text-xs font-semibold text-slate-600 leading-relaxed">{fitur}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
 

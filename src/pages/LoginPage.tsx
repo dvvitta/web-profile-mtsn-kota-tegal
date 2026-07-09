@@ -96,8 +96,11 @@ export default function LoginPage() {
                             <span className="text-emerald-200 text-2xl lg:text-3xl">MTsN Kota Tegal</span>
                         </h1>
                         <p className="text-emerald-50 text-sm leading-relaxed max-w-sm mt-4 opacity-90">
-                            Masuk untuk mengelola profil sekolah, berita, dan konten website madrasah.
+                            Masuk untuk mengelola profil sekolah, berita, dan konten website.
                         </p>
+                        <Link to="/" className="inline-block mt-6 text-sm font-semibold text-blue-500 hover:text-emerald-200 transition-colors">
+                            Kembali &rarr;
+                        </Link>
                     </div>
 
                     <div className="relative z-10 mt-12 pt-6 border-t border-emerald-500/30 text-xs font-semibold text-emerald-200 uppercase tracking-widest">
@@ -206,7 +209,7 @@ export default function LoginPage() {
                                 <span className="text-sm text-gray-500">
                                     Belum punya akun?{" "}
                                     <Link to="/RegisterPage" className="font-semibold text-emerald-600 hover:text-emerald-500 hover:underline transition-all">
-                                        Hubungi Admin
+                                        Daftar sekarang
                                     </Link>
                                 </span>
                             </div>

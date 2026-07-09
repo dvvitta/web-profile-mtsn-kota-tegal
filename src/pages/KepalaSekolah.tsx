@@ -34,10 +34,7 @@ function fallbackImage(id: number) {
     return `https://picsum.photos/400/300?random=${id}`;
 }
 
-function stripHtmlTags(str: string) {
-    if (!str) return '';
-    return str.replace(/<[^>]*>?/gm, '');
-}
+
 
 // --- Komponen Utama ---
 const SambutanKepalaSekolah: React.FC = () => {
@@ -95,7 +92,7 @@ const SambutanKepalaSekolah: React.FC = () => {
                     {/* Foto Kepala Sekolah */}
                     <div className="flex justify-center mb-8">
                         <div className="p-2 border border-gray-200 bg-gray-50 rounded shadow-sm inline-block">
-                            <img src="/src/assets/1_Dra.Hj.siti Fasikha, MM (1) copy.jpg" alt="Kepala Sekolah" className="w-48 h-60 object-cover rounded" />
+                            <img src="/src/assets/1_Dra.Hj.siti Fasikha, MM.jpg" alt="Kepala Sekolah" className="w-48 h-60 object-cover rounded" />
                         </div>
                     </div>
 
@@ -105,13 +102,13 @@ const SambutanKepalaSekolah: React.FC = () => {
                         
                         <p>Puji syukur kita panjatkan ke hadirat Allah SWT atas segala rahmat, hidayah, dan karunia-Nya, sehingga Madrasah Aliyah Negeri (MAN) Kota Tegal dapat terus berdiri tegak, berkembang, dan konsisten memberikan pelayanan pendidikan terbaik bagi peserta didik serta masyarakat luas.</p>
                         
-                        <p>Selamat datang di Website Resmi MAN Kota Tegal, wadah informasi dan komunikasi untuk seluruh civitas akademika, alumni, dan masyarakat luas yang ingin mengetahui lebih dekat mengenai profil, program, dan prestasi Madrasah kami.</p>
+                        <p>Selamat datang di Website Resmi MTsN Kota Tegal, wadah informasi dan komunikasi untuk seluruh civitas akademika, alumni, dan masyarakat luas yang ingin mengetahui lebih dekat mengenai profil, program, dan prestasi Madrasah kami.</p>
                         
                         <p>Sebagai lembaga pendidikan Islam, amanah sejarah tersebut kini kami jawab dengan komitmen penuh dalam menghadapi tantangan masa depan, pesatnya ilmu pengetahuan, teknologi, serta derasnya arus globalisasi. Kami senantiasa berupaya menghadirkan proses pembelajaran berkualitas yang mengintegrasikan kecerdasan intelektual, literasi digital, dan penguatan karakter religius demi mewujudkan visi besar kami: Menjadi Madrasah Berakhlak Mulia.</p>
 
-                        <p>Semoga MAN Kota Tegal senantiasa menjadi madrasah yang unggul, berdaya saing, dan tetap menjadi prioritas utama masyarakat dalam melahirkan generasi pemimpin masa depan yang berakhlak mulia serta siap berkarya bagi kemajuan bangsa, negara, dan agama.</p>
+                        <p>Semoga MTsN Kota Tegal senantiasa menjadi madrasah yang unggul, berdaya saing, dan tetap menjadi prioritas utama masyarakat dalam melahirkan generasi pemimpin masa depan yang berakhlak mulia serta siap berkarya bagi kemajuan bangsa, negara, dan agama.</p>
 
-                        <p>Akhir kata, semoga website ini dapat memberikan manfaat optimal sebagai media informasi dan publikasi positif bagi MAN Kota Tegal. Mari terus berkarya, berinovasi, dan berprestasi.</p>
+                        <p>Akhir kata, semoga website ini dapat memberikan manfaat optimal sebagai media informasi dan publikasi positif bagi MTsN Kota Tegal. Mari terus berkarya, berinovasi, dan berprestasi.</p>
                         
                         <div className="text-center pt-8 pb-4">
                             <p className="font-bold mb-6">Wassalamu'alaikum Warahmatullahi Wabarakatuh</p>

@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef, type FormEvent, useCallback } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import GuruManager from "./GuruManager";
+
+
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
@@ -12,7 +15,7 @@ interface Berita {
     isi: string; published: boolean; createdAt: string;
     kategori: Kategori; user: { id: number; nama: string };
 }
-type Tab = "berita" | "kategori";
+type Tab = "berita" | "kategori" | "guru";
 type AlertState = { type: "error" | "success"; message: string } | null;
 
 function authHeaders(token: string) {
@@ -505,11 +508,11 @@ export default function DashboardPage() {
 
                 {/* Tabs */}
                 <div className="flex gap-1 border-b border-gray-200 mb-8">
-                    {(["berita", "kategori"] as Tab[]).map((t) => (
+                    {(["berita", "kategori", "guru"] as Tab[]).map((t) => (
                         <button key={t} onClick={() => setTab(t)}
                             className={`px-5 py-2.5 text-sm font-semibold capitalize border-b-2 transition-colors -mb-px ${tab === t ? "border-emerald-600 text-emerald-700" : "border-transparent text-gray-400 hover:text-gray-700"
                                 }`}>
-                            {t === "berita" ? "Berita" : "Kategori"}
+                            {t === "berita" ? "Berita" : t === "kategori" ? "Kategori" : "Guru & Karyawan"}
                         </button>
                     ))}
                 </div>
@@ -623,6 +626,9 @@ export default function DashboardPage() {
                         </section>
                     </div>
                 )}
+                
+                {/* ── TAB GURU & KARYAWAN ── */}
+                {tab === "guru" && token && <GuruManager token={token} />}
             </main>
         </div>
     );

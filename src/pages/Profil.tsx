@@ -34,10 +34,10 @@ function fallbackImage(id: number) {
     return `https://picsum.photos/400/300?random=${id}`;
 }
 
-function stripHtmlTags(str: string) {
-    if (!str) return '';
-    return str.replace(/<[^>]*>?/gm, '');
-}
+// function stripHtmlTags(str: string) {
+//     if (!str) return '';
+//     return str.replace(/<[^>]*>?/gm, '');
+// }
 
 // --- Komponen Utama ---
 const Profil: React.FC = () => {
@@ -96,7 +96,7 @@ const Profil: React.FC = () => {
                     <div className="flex justify-center mb-8 ">
                         <div className="p-2 border border-gray-200 bg-gray-50 rounded shadow-sm inline-block">
                             <img
-                                src="/src/assets/man.jpg"
+                                src="/src/assets/background2.png"
                                 alt="Kepala Sekolah"
                                 className="w-150 h-auto object-cover rounded"
                             />
@@ -104,31 +104,12 @@ const Profil: React.FC = () => {
                     </div>
 
                     {/* Isi Sambutan */}
-                    
-                        <div className="space-y-10 text-sm text-gray-700 leading-relaxed text-justify px-0 lg:px-8">
-                            <p>
-                                Sebuah institusi besar tidak pernah lahir dalam semalam. Ada peluh, dedikasi, dan sinergi dari banyak pihak di balik kokohnya bangunan Madrasah Aliyah Negeri (MAN) Kota Tegal hari ini. Inilah kisah perjalanan kami—sebuah bukti nyata bahwa keterbatasan bukanlah penghalang untuk mencetak generasi gemilang.
-                            </p>
-                            <p>
-                                Kisah kami bermula pada tahun 1984. Diprakarsai oleh Yayasan Assalafiyah, madrasah ini awalnya hanyalah sebuah kelas jauh (filial) dari MAN Babakan. Di bawah arahan Kepala Madrasah pertama, Mu’min Mahmud, langkah kecil ini dimulai.
 
-                                Meski hanya menempati gedung MTs Assalafiyah dengan Kegiatan Belajar Mengajar (KBM) yang dilangsungkan pada sore hingga malam hari, semangat belajar tak pernah padam. Angkatan pertama kami sukses menarik ±160 siswa yang terbagi dalam empat rombongan belajar.
-                            </p>
-                            <p>Seiring turunnya SK Pusat pada 5 Agustus 1986, madrasah yang saat itu dipimpin oleh Mustadjab mulai menunjukkan taringnya. Kami dipercaya menyelenggarakan Ujian Akhir (EBTAN) perdana pada tahun ajaran 1986/1987 untuk 143 siswa.
-
-                                Fase ini adalah fase perjuangan. Demi mendapatkan waktu belajar yang lebih optimal di pagi hari, madrasah ini sempat beberapa kali berpindah lokasi—mulai dari MDA Kemeduran, Jalan Arum Randugunting, hingga MTs Al Munawar. Namun, semangat civitas akademika tidak pernah surut sedikit pun.</p>
-                            <p>Kerja keras bertahun-tahun akhirnya berbuah manis. Di era kepemimpinan Mohammad Cholid yang kemudian dilanjutkan oleh M. Sanuddin, angin segar itu datang. Tepat pada 25 November 1995, SK Penegerian resmi turun.
-
-                                Momen bersejarah ini diproklamirkan dengan penuh kebanggaan di Pendopo Balai Kota Tegal pada 7 Maret 1996. Peresmian ini menjadi simbol kolaborasi yang harmonis antara Wali Kota Tegal saat itu, M. Zakir, dan Kepala Kandepag, Mulyono.</p>
-                            <p>Langkah MAN Kota Tegal semakin tegak berkat kemuliaan hati Bapak Ismail (pensiunan pegawai Kandepag) dan sang istri, Ibu Rukoyah (pemilik PO. Dewi Sri), yang mewakafkan sebidang tanah. Di bawah kepemimpinan Chudlori Affandi, pembangunan tahap awal di Pesurungan Lor pun terealisasi.
-
-                                Hadirnya gedung baru menjadi magnet luar biasa. Animo masyarakat melonjak tajam hingga nyaris sepuluh kali lipat dari jumlah siswa sebelumnya. Saking banyaknya pendaftar, KBM bahkan sempat harus dibagi di dua lokasi yang berbeda.
-                            </p>
-                            <p>Keterbatasan sarana tak membuat kami diam menunggu. Melalui inisiatif luar biasa dari Kamaluddin dan sistem imbal swadaya, kami berhasil membangun tambahan ruang kelas secara mandiri. Perjuangan gigih ini akhirnya menarik perhatian penuh dari Kanwil Departemen Agama Provinsi Jawa Tengah.
-
-                                Tepat pada tahun ajaran 2001/2002, seluruh aktivitas MAN Kota Tegal resmi menyatu di gedung baru Pesurungan Lor. Perkembangan tidak berhenti di situ. Pada 11 Agustus 2003, berkat usulan Kepala Madrasah Mubasyir Dahlan dan dukungan Wali Kota Adi Winarso, madrasah mendapatkan hak pakai tanah seluas 4.600 m² untuk terus memperluas fasilitas.
-                            </p>
-                            <p>Kini, MAN Kota Tegal bukan lagi sekadar "kelas jauh" yang belajar di sore hari. Kami berdiri tegak sebagai institusi pendidikan kebanggaan masyarakat yang terus didukung oleh pemerintah dan Depag, siap mencetak generasi pemimpin masa depan yang berakhlak mulia dan berwawasan luas.</p>
+                    <div className="space-y-10 text-lg text-gray-700 leading-relaxed text-justify px-0 lg:px-8">
+                        <p>
+                            MTs Negeri Kota Tegal merupakan lembaga pendidikan jenjang Madrasah Tsanawiyah negeri unggulan yang berlokasi strategis di Jalan Pendidikan, Kelurahan Pesurungan Lor, Kecamatan Margadana, Kota Tegal. Berdiri sejak 19 Juli 1993 sebagai MTsN Filial Slawi, madrasah ini mengalami perkembangan pesat hingga resmi menjadi MTsN Margadana pada tahun 1995 dan akhirnya menyandang nama MTs Negeri Kota Tegal pada tahun 2017 berdasarkan KMA 211 Tahun 2015. Dengan status akreditasi A dan perolehan skor 97, madrasah ini berkomitmen penuh mewujudkan visi "Menjadi Madrasah Unggul, Berprestasi dan Terpercaya"
+                        </p>
+                        
                         </div>
 
 
@@ -188,7 +169,7 @@ const Profil: React.FC = () => {
                     <div className="bg-white border border-gray-200 shadow-sm p-4">
                         <div className="flex text-sm border-b border-gray-200 mb-4">
                             <button className="px-3 py-2 font-bold border-b-2 border-teal-600 text-teal-700">Latest</button>
-                            
+
                         </div>
 
                         <ul className="space-y-4">
