@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Outlet, Link, NavLink } from 'react-router-dom';
 import Footer from './Footer';
 import { useUIStore } from '../store/IUStore';
-import logoMadrasah from '../assets/Logo.png';
+import logoMadrasah from '../assets/logo.png';
 
 const Layout = () => {
     // cast to any to avoid 'unknown' store return type issues
