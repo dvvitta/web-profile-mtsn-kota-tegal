@@ -5,7 +5,7 @@ import { useNavigate, Link } from "react-router-dom";
 // ============================================================
 // KONFIGURASI — sesuaikan dengan alamat backend be-wpm kamu
 // ============================================================
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://be-mtsn.vercel.app/";
 const LOGIN_ENDPOINT = `${API_BASE_URL}/api/auth/login`;
 // ============================================================
 
