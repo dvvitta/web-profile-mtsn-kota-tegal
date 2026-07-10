@@ -106,24 +106,36 @@ function FormModal({ mode, token, editData, onClose, onSuccess }: FormModalProps
 
         setSubmitting(true);
         try {
-            const formData = new FormData();
-            formData.append("nama", nama.trim());
-            formData.append(isGuru ? "mapel" : "jabatan", mapelOrJabatan.trim());
-            formData.append("biografi", biografi.trim());
-            formData.append("tglLahir", tglLahir);
-            formData.append("gender", gender);
-            if (fotoFile) formData.append("foto", fotoFile);
+            // 1. Jika ada foto baru, upload dulu ke /api/upload → dapat Supabase URL
+            let fotoUrl: string | undefined = undefined;
+            if (fotoFile) {
+                const uploadForm = new FormData();
+                uploadForm.append("image", fotoFile);
+                const uploadRes = await api.post("upload", uploadForm, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                if (!uploadRes.data.success) {
+                    setAlert({ type: "error", message: "Gagal mengupload foto." });
+                    return;
+                }
+                fotoUrl = uploadRes.data.url;
+            }
 
-            const url = isEdit
-                ? `${mode}/${editData!.id}`
-                : `${mode}`;
+            // 2. Kirim data sebagai JSON (sama dengan berita)
+            const payload: Record<string, unknown> = {
+                nama: nama.trim(),
+                [isGuru ? "mapel" : "jabatan"]: mapelOrJabatan.trim(),
+                biografi: biografi.trim(),
+                tglLahir: tglLahir || undefined,
+                gender,
+                ...(fotoUrl !== undefined && { foto: fotoUrl }),
+            };
+
+            const url = isEdit ? `${mode}/${editData!.id}` : `${mode}`;
             const method = isEdit ? "put" : "post";
 
-            const res = await api[method](url, formData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    // Tidak set Content-Type — biarkan browser isi boundary multipart
-                },
+            const res = await api[method](url, payload, {
+                headers: { Authorization: `Bearer ${token}` },
             });
             const data = res.data;
 
