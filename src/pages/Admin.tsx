@@ -4,7 +4,7 @@ import GuruManager from "./GuruManager";
 
 
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://be-mtsn.vercel.app/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://be-mtsn.vercel.app/";
 
 // ─── Types ───────────────────────────────────────────────────
 
