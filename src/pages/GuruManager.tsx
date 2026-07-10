@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, type FormEvent } from "react";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://be-mtsn.vercel.app";
+import api from "../lib/api";
 
 interface Guru {
     id: number; nama: string; foto: string | null;
@@ -116,19 +115,19 @@ function FormModal({ mode, token, editData, onClose, onSuccess }: FormModalProps
             if (fotoFile) formData.append("foto", fotoFile);
 
             const url = isEdit
-                ? `${API_BASE_URL}/api/${mode}/${editData!.id}`
-                : `${API_BASE_URL}/api/${mode}`;
-            const method = isEdit ? "PUT" : "POST";
+                ? `${mode}/${editData!.id}`
+                : `${mode}`;
+            const method = isEdit ? "put" : "post";
 
-            const res = await fetch(url, {
-                method,
-                headers: { Authorization: `Bearer ${token}` },
-                // Tidak set Content-Type — biarkan browser isi boundary multipart
-                body: formData,
+            const res = await api[method](url, formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    // Tidak set Content-Type — biarkan browser isi boundary multipart
+                },
             });
-            const data = await res.json();
+            const data = res.data;
 
-            if (!res.ok || !data.success) {
+            if (!data.success) {
                 setAlert({ type: "error", message: data.message || "Gagal menyimpan data." });
                 return;
             }
@@ -257,11 +256,11 @@ export default function GuruManager({ token }: { token: string }) {
         setLoading(true);
         try {
             const [gRes, kRes] = await Promise.all([
-                fetch(`${API_BASE_URL}/api/guru`),
-                fetch(`${API_BASE_URL}/api/karyawan`),
+                api.get("guru"),
+                api.get("karyawan"),
             ]);
-            const gData = await gRes.json();
-            const kData = await kRes.json();
+            const gData = gRes.data;
+            const kData = kRes.data;
             if (gData.success) setGuru(gData.data);
             if (kData.success) setKaryawan(kData.data);
         } catch {
@@ -276,11 +275,10 @@ export default function GuruManager({ token }: { token: string }) {
     const handleDelete = async (id: number) => {
         if (!confirm(`Hapus data ini?`)) return;
         try {
-            const res = await fetch(`${API_BASE_URL}/api/${mode}/${id}`, {
-                method: "DELETE",
+            const res = await api.delete(`${mode}/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            const data = await res.json();
+            const data = res.data;
             if (data.success) {
                 setGlobalAlert({ type: "success", message: data.message });
                 fetchAll();

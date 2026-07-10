@@ -11,8 +11,7 @@ import {
     Users,
     Quote
 } from "lucide-react";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://be-mtsn.vercel.app/";
+import api from "../lib/api";
 
 // ─── Types ────────────────────────────────────────────────────
 
@@ -158,22 +157,23 @@ export default function PersonDetail({ jenis }: { jenis: Jenis }) {
 
     useEffect(() => {
         if (!id) return;
-        const fetch_ = async () => {
+        const fetchData = async () => {
             setLoading(true);
             setError(null);
             setNotFound(false);
             try {
-                const res = await fetch(`${API_BASE_URL}/api/${jenis}/${id}`);
-                const data = await res.json();
-                if (res.status === 404 || !data.success) { setNotFound(true); return; }
+                const res = await api.get(`${jenis}/${id}`);
+                const data = res.data;
+                if (!data.success) { setNotFound(true); return; }
                 setPerson(data.data);
-            } catch {
-                setError("Tidak dapat terhubung ke server.");
+            } catch (err: any) {
+                if (err.response?.status === 404) setNotFound(true);
+                else setError("Tidak dapat terhubung ke server.");
             } finally {
                 setLoading(false);
             }
         };
-        fetch_();
+        fetchData();
     }, [id, jenis]);
 
     if (loading) return <Skeleton />;
