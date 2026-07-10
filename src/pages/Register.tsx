@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useNavigate, Link } from "react-router-dom";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://be-mtsn.vercel.app/";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://be-wpm.vercel.app/";
 const REGISTER_ENDPOINT = `${API_BASE_URL}/api/auth/register`;
 
 interface RegisterResponse {
