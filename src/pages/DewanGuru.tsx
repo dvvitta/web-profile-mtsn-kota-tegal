@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://be-mtsn.vercel.app";
+import api from "../lib/api";
 
 // ─── Types ────────────────────────────────────────────────────
 
@@ -162,11 +161,11 @@ export default function DewanGuru() {
             setError(null);
             try {
                 const [gRes, kRes] = await Promise.all([
-                    fetch(`${API_BASE_URL}api/guru`),
-                    fetch(`${API_BASE_URL}api/karyawan`),
+                    api.get("guru"),
+                    api.get("karyawan"),
                 ]);
-                const gData = await gRes.json();
-                const kData = await kRes.json();
+                const gData = gRes.data;
+                const kData = kRes.data;
                 if (gData.success) setGuru(gData.data);
                 if (kData.success) setKaryawan(kData.data);
                 if (!gData.success && !kData.success)
