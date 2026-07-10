@@ -162,8 +162,8 @@ export default function DewanGuru() {
             setError(null);
             try {
                 const [gRes, kRes] = await Promise.all([
-                    fetch(`${API_BASE_URL}/api/guru`),
-                    fetch(`${API_BASE_URL}/api/karyawan`),
+                    fetch(`${API_BASE_URL}api/guru`),
+                    fetch(`${API_BASE_URL}api/karyawan`),
                 ]);
                 const gData = await gRes.json();
                 const kData = await kRes.json();
