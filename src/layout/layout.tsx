@@ -5,61 +5,58 @@ import { useUIStore } from '../store/IUStore';
 import logoMadrasah from '../assets/logo.png';
 
 const Layout = () => {
-    // cast to any to avoid 'unknown' store return type issues
+    // Mengambil state toggle menu mobile dari store global Anda
     const { isMobileMenuOpen, toggleMobileMenu } = useUIStore() as any;
 
-    // Fungsi pembantu agar menu tertutup otomatis saat link di versi mobile diklik
+    // State untuk mengontrol dropdown menu "MADRASAH"
+    const [isMadrasahOpen, setIsMadrasahOpen] = useState(false);
+    const toggleDropdown = () => setIsMadrasahOpen(!isMadrasahOpen);
+
+    // Fungsi pembantu agar menu mobile otomatis tertutup saat salah satu link diklik
     const handleMobileLinkClick = () => {
         if (isMobileMenuOpen) {
             toggleMobileMenu();
         }
     };
 
-
-    // Fungsi untuk mengatur gaya NavLink agar berubah saat halaman sedang aktif
-    const [isAkademikOpen, setIsAkademikOpen] = useState(false);
-    const toggleDropdown = () => setIsAkademikOpen(!isAkademikOpen);
-
+    // Style NavLink desktop yang responsif dan estetik saat halaman aktif
     const navLinkStyle = ({ isActive }: { isActive: boolean }) =>
-        `transition-colors duration-300 font-medium ${isActive
+        `transition-colors duration-300 font-semibold text-xs tracking-wider ${isActive
             ? "text-green-700 border-b-2 border-green-700 pb-1"
             : "text-gray-600 hover:text-green-700"
         }`;
 
+    // Logika jeda (delay) hover dropdown khusus untuk pengguna Laptop/Desktop
     const [timeoutId, setTimeoutId] = useState<ReturnType<typeof setTimeout> | null>(null);
 
     const handleMouseEnter = () => {
-        // Jika ada timeout yang berjalan (akan menutup), batalkan
         if (timeoutId) clearTimeout(timeoutId);
-        setIsAkademikOpen(true);
+        setIsMadrasahOpen(true);
     };
 
     const handleMouseLeave = () => {
-        // Berikan jeda 300ms sebelum menutup menu
         const id = setTimeout(() => {
-            setIsAkademikOpen(false);
-        }, 300);
+            setIsMadrasahOpen(false);
+        }, 200);
         setTimeoutId(id);
     };
 
     return (
-        <div className="font-sans text-gray-800 min-h-screen flex flex-col relative">
+        <div className="font-sans text-gray-800 min-h-screen flex flex-col relative bg-slate-50/20">
 
-            {/* --- Bagian Navbar --- */}
-            <nav className="flex justify-between items-center px-8 py-4 bg-white shadow-sm sticky top-0 z-50 transition-all duration-300">
+            {/* --- 1. NAVBAR UTAMA (Sudah Dikunci ke Tengah untuk Laptop & HP) --- */}
+            <nav className="flex justify-between md:justify-center items-center px-6 md:px-12 py-4 bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 transition-all duration-300 w-full h-16 border-b border-gray-100 relative">
 
-                {/* Logo */}
-                <Link to="/" className="font-bold text-green-800 text-xl tracking-wide hover:opacity-80 transition-opacity">
-                    <img src={logoMadrasah} alt="Logo" className="h-10 w-auto" />
+                {/* Logo Madrasah (Tetap di kiri, dikunci pakai absolute agar tidak mendorong menu tengah) */}
+                <Link to="/" onClick={handleMobileLinkClick} className="font-bold text-green-800 hover:opacity-80 transition-opacity flex items-center shrink-0 md:absolute md:left-12">
+                    <img src={logoMadrasah} alt="Logo MTsN Tegal" className="h-9 w-auto md:h-10 object-contain" />
                 </Link>
 
-                {/* Desktop Menu (Menggunakan NavLink untuk indikator aktif) */}
-                <ul className="hidden md:flex space-x-8 text-sm items-center">
+                {/* MENU DESKTOP (Sekarang dipaksa berada tepat di TENGAH layar laptop) */}
+                <ul className="hidden md:flex items-center space-x-6 lg:space-x-8 text-sm mx-auto">
                     <li><NavLink to="/" className={navLinkStyle} end>BERANDA</NavLink></li>
 
-
-                    {/* Dropdown Akademik */}
-                    {/* Desktop Menu */}
+                    {/* Dropdown Menu Desktop */}
                     <li
                         className="relative"
                         onMouseEnter={handleMouseEnter}
@@ -67,91 +64,83 @@ const Layout = () => {
                     >
                         <button
                             onClick={toggleDropdown}
-                            className={`transition-colors duration-300 font-medium flex items-center gap-1 ${isAkademikOpen ? "text-green-700" : "text-gray-600 hover:text-green-700"
-                                }`}
+                            className={`transition-colors duration-300 font-semibold text-xs tracking-wider flex items-center gap-1.5 uppercase ${isMadrasahOpen ? "text-green-700" : "text-gray-600 hover:text-green-700"}`}
                         >
                             MADRASAH
-                            <span className={`text-[10px] transition-transform duration-300 ${isAkademikOpen ? 'rotate-180' : ''}`}></span>
+                            <svg className={`w-3 h-3 transition-transform duration-300 ${isMadrasahOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                            </svg>
                         </button>
 
-                        {isAkademikOpen && (
-                            <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-100 rounded-lg shadow-xl py-2 z-50">
-                                <NavLink to="/Profil" onClick={() => setIsAkademikOpen(false)} className="block px-4 py-2 hover:bg-green-50 text-gray-700">PROFIL MADRASAH</NavLink>
-                                <NavLink to="/SambutanKepalaSekolah" onClick={() => setIsAkademikOpen(false)} className="block px-4 py-2 hover:bg-green-50 text-gray-700">KEPALA MADRASAH</NavLink>
-                                <NavLink to="/DewanGurudankaryawan" onClick={() => setIsAkademikOpen(false)} className="block px-4 py-2 hover:bg-green-50 text-gray-700">DEWAN GURU DAN KARYAWAN</NavLink>
+                        {/* Kotak Dropdown List Desktop */}
+                        {isMadrasahOpen && (
+                            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-56 bg-white border border-gray-100 rounded-xl shadow-xl py-2.5 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                                <NavLink to="/Profil" onClick={() => setIsMadrasahOpen(false)} className="block px-4 py-2 text-xs font-medium hover:bg-green-50 text-gray-700 transition-colors">PROFIL MADRASAH</NavLink>
+                                <NavLink to="/SambutanKepalaSekolah" onClick={() => setIsMadrasahOpen(false)} className="block px-4 py-2 text-xs font-medium hover:bg-green-50 text-gray-700 transition-colors">KEPALA MADRASAH</NavLink>
+                                <NavLink to="/DewanGurudankaryawan" onClick={() => setIsMadrasahOpen(false)} className="block px-4 py-2 text-xs font-medium hover:bg-green-50 text-gray-700 transition-colors">DEWAN GURU & KARYAWAN</NavLink>
                             </div>
                         )}
                     </li>
-                    <li><NavLink to="/akademik" className={navLinkStyle}>AKADEMIK</NavLink></li>
+
+                    <li><NavLink to="/Akademik" className={navLinkStyle}>AKADEMIK</NavLink></li>
                     <li><NavLink to="/Kontak" className={navLinkStyle}>KONTAK</NavLink></li>
                 </ul>
 
-                {/* Actions */}
-                <div className="hidden md:flex items-center space-x-4">
-                    {/* Search Button dengan efek hover membulat */}
-                    
-
-                    {/* CTA Button dengan efek taktil (membesar saat di-hover, mengecil saat diklik) */}
-                    {/* <button className="bg-green-700 text-white px-5 py-2.5 rounded-md text-sm font-semibold hover:bg-green-800 hover:shadow-md transform hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all duration-200">
-                        <NavLink to="/LoginPage">Masuk</NavLink>
-
-                    </button> */}
-                </div>
-
-                {/* Mobile Toggle Button */}
+                {/* TOMBOL TOGGLE MENU MOBILE */}
                 <button
-                    className="md:hidden text-2xl text-green-800 p-2 focus:outline-none hover:bg-green-50 rounded-lg transition-colors"
+                    className="md:hidden text-xl text-green-800 p-2 focus:outline-none hover:bg-green-50 rounded-xl transition-colors shrink-0"
                     onClick={toggleMobileMenu}
-                    aria-label="Toggle Menu"
+                    aria-label="Toggle Menu Mobile"
                 >
-                    {isMobileMenuOpen ? '✕' : '☰'}
+                    {isMobileMenuOpen ? (
+                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                    ) : (
+                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+                    )}
                 </button>
             </nav>
 
-            {/* --- Mobile Menu Dropdown (Muncul hanya di HP saat state true) --- */}
+            {/* --- 2. MENU MOBILE DROPDOWN (Posisinya Tengah / text-center untuk HP) --- */}
             <div
-                className={`md:hidden fixed top-18 left-0 w-full bg-white shadow-lg border-t border-gray-100 z-40 transform transition-all duration-300 ease-in-out origin-top ${isMobileMenuOpen ? "scale-y-100 opacity-100" : "scale-y-0 opacity-0 pointer-events-none"
-                    }`}
+                className={`md:hidden fixed top-16 left-0 w-full bg-white shadow-xl border-t border-gray-100 z-45 transform transition-all duration-300 ease-in-out origin-top max-h-[calc(100vh-4rem)] overflow-y-auto ${
+                    isMobileMenuOpen ? "scale-y-100 opacity-100 visible" : "scale-y-0 opacity-0 invisible pointer-events-none"
+                }`}
             >
-                <div className="flex flex-col px-8 py-6 space-y-6 text-center">
-                    <NavLink to="/" onClick={handleMobileLinkClick} className={navLinkStyle} end>BERANDA</NavLink>
-                    {/* Mobile Menu Dropdown */}
-                    <div className={`md:hidden fixed top-18 left-0 w-full bg-white ...`}>
-                        <div className="flex flex-col px-8 py-6 space-y-4 text-center">
-                            <NavLink to="/" onClick={handleMobileLinkClick} className={navLinkStyle} end>BERANDA</NavLink>
+                <div className="flex flex-col px-8 py-6 space-y-4 text-center items-center justify-center">
+                    <NavLink to="/" onClick={handleMobileLinkClick} className="w-full text-sm font-bold text-gray-700 hover:text-green-700 py-2 border-b border-gray-50 block">BERANDA</NavLink>
 
-                            {/* Dropdown Mobile */}
-                            <div className="flex flex-col">
-                                <button onClick={toggleDropdown} className="text-gray-600 font-medium py-2">MADRASAH</button>
-                                {isAkademikOpen && (
-                                    <div className="bg-gray-50 py-2 rounded-lg my-1">
-                                        <NavLink to="/Profil" onClick={handleMobileLinkClick} className="block py-2 text-sm text-gray-600">PROFIL MADRASAH</NavLink>
-                                        <NavLink to="/SambutanKepalaSekolah" onClick={handleMobileLinkClick} className="block py-2 text-sm text-gray-600">KEPALA MADRASAH</NavLink>
-                                        <NavLink to="/DewanGurudankaryawan" onClick={handleMobileLinkClick} className="block py-2 text-sm text-gray-600">DEWAN GURU DAN KARYAWAN</NavLink>
-                                    </div>
-                                )}
+                    {/* Akordion Dropdown Mobile Tengah */}
+                    <div className="flex flex-col border-b border-gray-50 pb-2 w-full items-center">
+                        <button 
+                            onClick={toggleDropdown} 
+                            className="text-gray-700 text-sm font-bold py-2 flex items-center justify-center gap-2 w-full text-center"
+                        >
+                            <span className="pl-4">MADRASAH</span>
+                            <svg className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${isMadrasahOpen ? 'rotate-180 text-green-700' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        
+                        {isMadrasahOpen && (
+                            <div className="w-full bg-slate-50 rounded-xl px-4 py-2 mt-1 flex flex-col space-y-3 border border-slate-100/60 animate-in fade-in duration-200">
+                                <NavLink to="/Profil" onClick={handleMobileLinkClick} className="block py-1.5 text-xs font-semibold text-gray-600 hover:text-green-700 text-center">PROFIL MADRASAH</NavLink>
+                                <NavLink to="/SambutanKepalaSekolah" onClick={handleMobileLinkClick} className="block py-1.5 text-xs font-semibold text-gray-600 hover:text-green-700 text-center">KEPALA MADRASAH</NavLink>
+                                <NavLink to="/DewanGurudankaryawan" onClick={handleMobileLinkClick} className="block py-1.5 text-xs font-semibold text-gray-600 hover:text-green-700 text-center">DEWAN GURU DAN KARYAWAN</NavLink>
                             </div>
-
-                            <NavLink to="/Akademik" onClick={handleMobileLinkClick} className={navLinkStyle}>AKADEMIK</NavLink>
-                            {/* ... sisa menu lainnya */}
-                        </div>
+                        )}
                     </div>
-                    <NavLink to="/Akademik" onClick={handleMobileLinkClick} className={navLinkStyle}>AKADEMIK</NavLink>
-                    <NavLink to="/berita" onClick={handleMobileLinkClick} className={navLinkStyle}>BERITA</NavLink>
 
-                    <hr className="border-gray-100" />
-
-                    <button className="bg-green-700 text-white px-4 py-3 rounded-md text-sm font-semibold hover:bg-green-800 active:scale-95 transition-all">
-                        Daftar Sekarang
-                    </button>
+                    <NavLink to="/Akademik" onClick={handleMobileLinkClick} className="w-full text-sm font-bold text-gray-700 hover:text-green-700 py-2 border-b border-gray-50 block">AKADEMIK</NavLink>
+                    <NavLink to="/Kontak" onClick={handleMobileLinkClick} className="w-full text-sm font-bold text-gray-700 hover:text-green-700 py-2 block">KONTAK</NavLink>
                 </div>
             </div>
-            {/* --- Akhir bagian Navbar --- */}
 
-            <main className="grow flex flex-col">
+            {/* --- 3. KONTEN UTAMA --- */}
+            <main className="grow flex flex-col z-10">
                 <Outlet />
             </main>
 
+            {/* --- 4. FOOTER --- */}
             <Footer />
         </div>
     );
