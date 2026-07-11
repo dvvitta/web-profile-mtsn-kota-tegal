@@ -2,12 +2,9 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useNavigate, Link } from "react-router-dom";
 
-// ============================================================
 // KONFIGURASI — sesuaikan dengan alamat backend be-wpm kamu
-// ============================================================
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://be-wpm.vercel.app";
 const LOGIN_ENDPOINT = `${API_BASE_URL}/api/auth/login`;
-// ============================================================
 
 interface LoginResponse {
     success: boolean;
@@ -88,9 +85,7 @@ export default function LoginPage() {
                     <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 rounded-full bg-teal-400 opacity-20 blur-xl"></div>
 
                     <div className="relative z-10">
-                        <div className="w-14 h-14 bg-white text-emerald-700 rounded-xl flex items-center justify-center font-extrabold text-2xl mb-8 shadow-lg">
-                            MT
-                        </div>
+                        
                         <h1 className="text-3xl lg:text-4xl font-bold leading-tight mb-4 text-white">
                             Portal Internal<br />
                             <span className="text-emerald-200 text-2xl lg:text-3xl">MTsN Kota Tegal</span>
@@ -98,7 +93,7 @@ export default function LoginPage() {
                         <p className="text-emerald-50 text-sm leading-relaxed max-w-sm mt-4 opacity-90">
                             Masuk untuk mengelola profil sekolah, berita, dan konten website.
                         </p>
-                        <Link to="/" className="inline-block mt-6 text-sm font-semibold text-blue-500 hover:text-emerald-200 transition-colors">
+                        <Link to="/" className="inline-block mt-6 text-sm font-semibold text-white hover:text-emerald-200 transition-colors">
                             Kembali &rarr;
                         </Link>
                     </div>
@@ -153,7 +148,7 @@ export default function LoginPage() {
                                     id="email"
                                     name="email"
                                     type="email"
-                                    placeholder="nama@mtsnkotategal.sch.id"
+                                    placeholder="nama@gmail.com"
                                     autoComplete="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
