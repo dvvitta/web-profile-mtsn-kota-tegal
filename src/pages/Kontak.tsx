@@ -101,7 +101,7 @@ const HubungiKami: React.FC = () => {
         { label: 'Email', value: 'mts_margadana@yahoo.co.id' },
         {
             label: 'Website',
-            value: <a href="http://www.mtsnkotategal.sch.id" className="text-teal-600 hover:underline" target="_blank" rel="noopener noreferrer">http://www.mtsnkotategal.sch.id</a>
+            value: <a href="https://mtsnkotategal.site" className="text-teal-600 hover:underline" target="_blank" rel="noopener noreferrer">https://mtsnkotategal.site</a>
         },
     ];
 

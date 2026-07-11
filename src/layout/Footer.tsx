@@ -4,20 +4,28 @@ const Footer = () => {
     return (
         <footer className="bg-green-950 text-white pt-16 pb-8 px-8 md:px-20">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 max-w-7xl mx-auto px-9">
+                {/* Video 1 */}
                 <iframe
+                    className="w-full aspect-video rounded-xl"
                     src="https://www.youtube.com/embed/cg71be1-rUU?si=Pq_ra5xuoxpMO5pa"
                     title="YouTube video player"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerPolicy="strict-origin-when-cross-origin"
                     allowFullScreen></iframe>
+                
+                {/* Video 2 (Link Diperbarui & Disesuaikan format Embed) */}
                 <iframe
-                    src="https://www.youtube.com/embed/cg71be1-rUU?si=Pq_ra5xuoxpMO5pa"
+                    className="w-full aspect-video rounded-xl"
+                    src="https://www.youtube.com/embed/qcWTKq74z6U?si=63tOM8YOqTP0CWkn"
                     title="YouTube video player"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerPolicy="strict-origin-when-cross-origin"
                     allowFullScreen></iframe>
+                
+                {/* Video 3 (Link Diperbarui & Disesuaikan format Embed) */}
                 <iframe
-                    src="https://www.youtube.com/embed/cg71be1-rUU?si=Pq_ra5xuoxpMO5pa"
+                    className="w-full aspect-video rounded-xl"
+                    src="https://www.youtube.com/embed/8da-PkVsvAo?si=4Lz4B9e2LvIKoBOw"
                     title="YouTube video player"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerPolicy="strict-origin-when-cross-origin"
@@ -51,8 +59,6 @@ const Footer = () => {
                                 <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.517 3.545 12 3.545 12 3.545s-7.516 0-9.387.508a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.503 5.837a3.003 3.003 0 0 0 2.11 2.11c1.871.508 9.387.508 9.387.508s7.517 0 9.387-.508a3.003 3.003 0 0 0 2.11-2.11c.503-1.87.503-5.837.503-5.837s0-3.967-.503-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                             </svg>
                         </a>
-
-                        
                     </div>
 
                     {/* --- Copyright Text --- */}
